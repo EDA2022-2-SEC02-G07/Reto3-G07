@@ -24,6 +24,7 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.ADT import orderedmap as om
 assert cf
 
 
@@ -37,21 +38,36 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- Reportar los 5 videojuegos más recientes de una plataforma")
+    print("3- ")
+    print("4- ")
+    print("5- ")
+    print("6- ")
+    print("7- ")
+    print("8- ")
+    print("9- ")
 
 catalog = None
-
+size = "-small"
 """
 Menu principal
 """
+def printreq1(catalog):
+    map = catalog["model"]["MapByPlatform"]
+    list_ = catalog["model"]["GamesList"]
+    print("Altura:",str(om.height(map)))
+    print("Numero de nodos:",str(om.size(map)))
+    print("Numero de elemtos:",str(lt.size(list_)))
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+        catalog = controller.newController()
+        controller.loadData(catalog,size)
         print("Cargando información de los archivos ....")
 
     elif int(inputs[0]) == 2:
-        pass
+        printreq1(catalog)
 
     else:
         sys.exit(0)

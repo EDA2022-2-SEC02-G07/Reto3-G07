@@ -29,6 +29,7 @@ import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
+from DISClib.ADT import orderedmap as om
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
 
@@ -38,9 +39,20 @@ los mismos.
 """
 
 # Construccion de modelos
-
+def newCatalog():
+    catalog = {"GamesList":lt.newList("ARRAY_LIST"),
+                "MapByPlatform":om.newMap(omaptype="RBT")}
+    return catalog
 # Funciones para agregar informacion al catalogo
-
+def add_contentCategory(catalog, content):
+    pass
+def add_contentGames(catalog, content):
+    for platform in content["Platforms"].split(","):
+        platform = platform.strip()
+        if om.contains(catalog["MapByPlatform"],platform) == False:
+            om.put(catalog["MapByPlatform"],platform,lt.newList("ARRAY_LIST"))
+        lt.addLast(me.getValue(om.get(catalog["MapByPlatform"],platform)),content)
+    lt.addLast(catalog["GamesList"],content)
 # Funciones para creacion de datos
 
 # Funciones de consulta

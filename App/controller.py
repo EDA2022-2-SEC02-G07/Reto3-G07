@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
 import config as cf
 import model
 import csv
@@ -30,9 +29,37 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
-
+def newController():
+    """
+    Crea una instancia del modelo
+    """
+    control = {
+        'model': model.newCatalog()
+    }
+    return control
 # Funciones para la carga de datos
-
+def loadData(control,size):
+    """
+    Carga los datos de los archivos y cargar los datos en la
+    estructura de datos
+    """
+    catalog = control['model']
+    loadContentCategory(catalog,size)
+    loadContentGames(catalog,size)
+def loadContentCategory(catalog,size):
+    file = 'Speedruns/category_data_urf-8'+size+'.csv'
+    contentfile = cf.data_dir + file
+    input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
+    for content in input_file:
+        model.add_contentCategory(catalog, content)
+    return catalog
+def loadContentGames(catalog,size):
+    file = 'Speedruns/game_data_utf-8'+size+'.csv'
+    contentfile = cf.data_dir + file
+    input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
+    for content in input_file:
+        model.add_contentGames(catalog, content)
+    return catalog
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
