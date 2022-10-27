@@ -25,6 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
+from tabulate  import tabulate
 assert cf
 
 
@@ -39,25 +40,47 @@ def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- Reportar los 5 videojuegos más recientes de una plataforma")
-    print("3- ")
-    print("4- ")
-    print("5- ")
-    print("6- ")
-    print("7- ")
-    print("8- ")
-    print("9- ")
+    print("3- Reportar los registros más veloces de los mejores tiempos de un jugador en específico")
+    print("4- Reportar los registros más veloces dentro de un rango de intentos")
+    print("5- Reportar los registros más lentos dentro de un rango de fechas")
+    print("6- Reportar los registros más recientes en un rango de tiempos récord")
+    print("7- Diagramar el histograma de tiempos para un año de publicación")
+    print("8- Encontrar los 5 videojuegos más rentables para retransmitir")
+    print("9- Mostrar la distribución de récords por país en un año de publicación en un rango de tiempos")
+    print("0- Salir")
 
 catalog = None
 size = "-small"
 """
 Menu principal
 """
-def printreq1(catalog):
-    map = catalog["model"]["MapByPlatform"]
-    list_ = catalog["model"]["GamesList"]
-    print("Altura:",str(om.height(map)))
-    print("Numero de nodos:",str(om.size(map)))
-    print("Numero de elemtos:",str(lt.size(list_)))
+def load(catalog):
+    printable1 = [["Game_id","Release_date","Name","Abbreviation","Platforms","Total_runs","Genres"]]
+    printable2 = [["Game_id","Record_Date_0","Num_Runs","Name","Category","Subcategory","Country_0","Players_0","Time_0"]]
+    games = catalog["model"]["GamesList"]
+    first_games = lt.subList(games,1,3)
+    last_games = lt.subList(games,lt.size(games)-2,3)
+    category = catalog["model"]["CategoryList"]
+    first_category = lt.subList(category,1,3)
+    last_category = lt.subList(category,lt.size(category)-2,3)
+    for i in (lt.iterator(first_games),lt.iterator(last_games)):
+        printable1.append([i["Game_Id"],i["Release_Date"],i["name"],
+            i["Abbreviation"],i["Platforms"],i["Total_Runs"],i["Genres"]])
+    for i in (lt.iterator(first_category),lt.iterator(last_category)):
+        app = []
+        for e in printable2[0]:
+            app.append(i[e])
+        printable2.append(app)
+    print(tabulate(printable1,tablefmt="grid"))
+    print(tabulate(printable2,tablefmt="grid"))
+def printreq1(catalog,platform,date1,date2):
+    size,list = controller.GamesByPlatform(catalog,platform,date1,date2)
+    print("Juegos disponibles para",platform+":",str(size))
+    for i in lt.iterator(list):
+        print(i)
+def printreq2(catalog):
+    pass
+
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
@@ -65,9 +88,16 @@ while True:
         catalog = controller.newController()
         controller.loadData(catalog,size)
         print("Cargando información de los archivos ....")
+        load(catalog)
 
     elif int(inputs[0]) == 2:
-        printreq1(catalog)
+        platform = input("Ingrese la plataforma: ")
+        date1 = input("Ingrese la primera fecha: ")
+        date2 = input("Ingrese la segunda fecha: ")
+        printreq1(catalog,platform,date1,date2)
+
+    elif int(inputs[0])==3:
+        printreq2(catalog)
 
     else:
         sys.exit(0)

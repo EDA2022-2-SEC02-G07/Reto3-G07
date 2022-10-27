@@ -63,3 +63,8 @@ def loadContentGames(catalog,size):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def GamesByPlatform(catalog,platform,date1,date2): #Función Pricipal Requerimiento 1
+    return model.GamesByPlatform(catalog["model"],platform,date1,date2)
+
+def BestTimesByPlayer(catalog, player_name):
+    pass
