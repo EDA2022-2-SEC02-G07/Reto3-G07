@@ -32,6 +32,7 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import orderedmap as om
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
+import time
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -70,11 +71,11 @@ def add_contentGames(catalog, content):
     for platform in content["Platforms"].split(","):
         platform = platform.strip()
         if mp.contains(catalog["MapByPlatform"],platform) == False:
-            mp.put(catalog["MapByPlatform"],platform,{"map":om.newMap(omaptype="RBT"),"size":0})
+            mp.put(catalog["MapByPlatform"],platform,{"map":om.newMap(omaptype="RBT",comparefunction=comparedates),"size":0})
         map_dict = me.getValue(mp.get(catalog["MapByPlatform"],platform))
         if om.contains(map_dict["map"],content["Release_Date"]) == False:
             om.put(map_dict["map"],content["Release_Date"],lt.newList("ARRAY_LIST"))
-        lt.addLast(me.getValue(om.get(map_dict["map"],content["Release_Date"])),content["Release_Date"])
+        lt.addLast(me.getValue(om.get(map_dict["map"],content["Release_Date"])),content)
         map_dict["size"] += 1
     lt.addLast(catalog["GamesList"],content)
     catalog["Id_Name_Dict"][content["Game_Id"]] = content["Name"]
@@ -86,13 +87,7 @@ def add_contentGames(catalog, content):
 def GamesByPlatform(catalog,platform,date1,date2): #Función Pricipal Requerimiento 1
     platformMapDict = me.getValue(mp.get(catalog["MapByPlatform"],platform))
     datesList = om.values(platformMapDict["map"],date1,date2)
-    print(datesList)
-    returnDateList = lt.newList("ARRAY_LIST")
-    
-    for DateList in lt.iterator(datesList):
-        for Date in lt.iterator(DateList):
-            lt.addLast(returnDateList,Date)
-    return platformMapDict["size"],returnDateList
+    return platformMapDict["size"],datesList
 
 def BestTimesbyPlayer(catalog, PlayerName): #Función Pricipal Requerimiento 2
     
@@ -111,5 +106,22 @@ def TopFiveStreamingGames(Platform): #Función Pricipal Requerimiento 7
 def RecordsbyCountry(Anio__publicacion,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 7
     pass
 # Funciones utilizadas para comparar elementos dentro de una lista
+def comparedates(date1,date2):
+    if len(date1) == 8:
+        date1 = time.strptime(date1, "%y-%m-%d")
+    else:
+        date1 = time.strptime(date1, "%Y-%m-%d")
+    if len(date2) == 8:
+        date2 = time.strptime(date2, "%y-%m-%d")
+    else:
+        date2 = time.strptime(date2, "%Y-%m-%d")
 
+    if date1 > date2:
+        return 1
+    elif date1 < date2:
+        return -1
+    else:
+        return 0
 # Funciones de ordenamiento
+
+print(time.strptime("86-09-26", "%y-%m-%d"))

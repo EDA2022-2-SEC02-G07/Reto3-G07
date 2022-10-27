@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from traceback import print_list
 import config as cf
 import sys
 import controller
@@ -96,8 +97,30 @@ def load(catalog):
 def printreq1(catalog,platform,date1,date2):
     size,list = controller.GamesByPlatform(catalog,platform,date1,date2)
     print("Juegos disponibles para",platform+":",str(size))
-    for i in lt.iterator(list):
-        print(i)
+    print_list1 = [["Date","Count","Details"]]
+    if lt.size(list) <= 6:
+        for i in lt.iterator(list):
+            print_list2 = [["Abbreviation","Name","Platforms","Genres","Total_Runs"]]
+            for e in lt.iterator(i):
+                Date = e["Release_Date"]
+                print_list2.append([e["Abbreviation"],e["Name"],e["Platforms"],e["Genres"],e["Total_Runs"]])
+            print_list1.append([Date,lt.size(i),tabulate(print_list2,tablefmt="grid")])
+    else:
+        first = lt.subList(list,1,3)
+        last = lt.subList(list,lt.size(list)-2,3)
+        for i in lt.iterator(first):
+            print_list2 = [["Abbreviation","Name","Platforms","Genres","Total_Runs"]]
+            for e in lt.iterator(i):
+                Date = e["Release_Date"]
+                print_list2.append([e["Abbreviation"],e["Name"],e["Platforms"],e["Genres"],e["Total_Runs"]])
+            print_list1.append([Date,lt.size(i),tabulate(print_list2,tablefmt="grid")])
+        for i in lt.iterator(last):
+            print_list2 = [["Abbreviation","Name","Platforms","Genres","Total_Runs"]]
+            for e in lt.iterator(i):
+                Date = e["Release_Date"]
+                print_list2.append([e["Abbreviation"],e["Name"],e["Platforms"],e["Genres"],e["Total_Runs"]])
+            print_list1.append([Date,lt.size(i),tabulate(print_list2,tablefmt="grid")])
+    print(tabulate(print_list1,tablefmt="grid"))
 def printreq2(catalog):
     pass
 
