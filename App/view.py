@@ -55,24 +55,44 @@ size = "-small"
 Menu principal
 """
 def load(catalog):
-    printable1 = [["Game_id","Release_date","Name","Abbreviation","Platforms","Total_runs","Genres"]]
-    printable2 = [["Game_id","Record_Date_0","Num_Runs","Name","Category","Subcategory","Country_0","Players_0","Time_0"]]
+    printable1 = [["Game_Id","Release_Date","Name","Abbreviation","Platforms","Total_Runs","Genres"]]
+    printable2 = [["Game_Id","Record_Date_0","Num_Runs","Name","Category","Subcategory","Country_0","Players_0","Time_0"]]
     games = catalog["model"]["GamesList"]
     first_games = lt.subList(games,1,3)
     last_games = lt.subList(games,lt.size(games)-2,3)
     category = catalog["model"]["CategoryList"]
     first_category = lt.subList(category,1,3)
     last_category = lt.subList(category,lt.size(category)-2,3)
-    for i in (lt.iterator(first_games),lt.iterator(last_games)):
-        printable1.append([i["Game_Id"],i["Release_Date"],i["name"],
-            i["Abbreviation"],i["Platforms"],i["Total_Runs"],i["Genres"]])
-    for i in (lt.iterator(first_category),lt.iterator(last_category)):
+    for i in (lt.iterator(first_games)):
+        app = []
+        for e in printable1[0]:
+            app.append(i[e])
+        printable1.append(app)
+    for i in (lt.iterator(last_games)):
+        app = []
+        for e in printable1[0]:
+            app.append(i[e])
+        printable1.append(app)
+    for i in (lt.iterator(first_category)):
         app = []
         for e in printable2[0]:
-            app.append(i[e])
+            if e != "Name":
+                app.append(i[e])
+            else:
+                app.append(catalog["model"]["Id_Name_Dict"][i["Game_Id"]])
         printable2.append(app)
-    print(tabulate(printable1,tablefmt="grid"))
-    print(tabulate(printable2,tablefmt="grid"))
+    for i in (lt.iterator(last_category)):
+        app = []
+        for e in printable2[0]:
+            if e != "Name":
+                app.append(i[e])
+            else:
+                app.append(catalog["model"]["Id_Name_Dict"][i["Game_Id"]])
+        printable2.append(app)
+    print(("Primeros y últimos 3 videojuegos cargados:"))
+    print(tabulate(printable1,tablefmt="grid",maxcolwidths=13))
+    print("Primeros y ultimos 3 registros cargados")
+    print(tabulate(printable2,tablefmt="grid",maxcolwidths=13))
 def printreq1(catalog,platform,date1,date2):
     size,list = controller.GamesByPlatform(catalog,platform,date1,date2)
     print("Juegos disponibles para",platform+":",str(size))

@@ -42,6 +42,7 @@ los mismos.
 def newCatalog():
     catalog = {"GamesList":lt.newList("ARRAY_LIST"),
                 "CategoryList":lt.newList("ARRAY_LIST"),
+                "Id_Name_Dict" : {},
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap()}
     return catalog
@@ -76,6 +77,7 @@ def add_contentGames(catalog, content):
         lt.addLast(me.getValue(om.get(map_dict["map"],content["Release_Date"])),content["Release_Date"])
         map_dict["size"] += 1
     lt.addLast(catalog["GamesList"],content)
+    catalog["Id_Name_Dict"][content["Game_Id"]] = content["Name"]
     
 
 # Funciones para creacion de datos
