@@ -68,3 +68,5 @@ def GamesByPlatform(catalog,platform,date1,date2): #Función Pricipal Requerimie
 
 def BestTimesByPlayer(catalog, player_name):
     pass
+def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Pricipal Requerimiento 3
+    return model.BestTimesbyAttemptsRange(catalog["model"],Lim_inferior,Lim_superior)

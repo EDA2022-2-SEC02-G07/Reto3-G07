@@ -46,11 +46,12 @@ def newCatalog():
                 "Id_Name_Dict" : {},
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
-                "MapByRuns":mp.newMap()}
+                "MapByRuns":om.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
     players = lt.newList('ARRAY_LIST')
+    content["Num_Runs"] = int(content["Num_Runs"])
     for player1 in content['Players_0']:
         player1 = player1.strip()
         if mp.contains(catalog['MapByPlayers'], player1) == False:
@@ -64,8 +65,12 @@ def add_contentCategory(catalog, content):
         if mp.contains(catalog['MapByPlayers'], player3) == False:
             mp.put(catalog['MapByPlayers'], player3, om.newMap(omaptype='RBT'))
     lt.addLast(catalog['CategoryList'], content)
-    if mp.contains(catalog["MapByRuns"],content["Num_Runs"]) == False: #Mapa por # de runs
-        mp.put(catalog["MapByRuns"],content["Num_Runs"],om.newMap(omaptype="RBT"))
+    if om.contains(catalog["MapByRuns"],content["Num_Runs"]) == False: #Mapa por # de runs
+        om.put(catalog["MapByRuns"],content["Num_Runs"],om.newMap(omaptype="RBT"))
+    map_runs = me.getValue(om.get(catalog["MapByRuns"],content["Num_Runs"]))
+    if om.contains(map_runs,content["Time_0"]) == False:
+        om.put(map_runs,content["Time_0"],lt.newList("ARRAY_LIST"))
+    lt.addLast(me.getValue(om.get(map_runs,content["Time_0"])),content)
     #content['Players_0']
     #for player in content['']
     #Mapa ordendo por jugadores con árboles como valores.
@@ -96,8 +101,12 @@ def BestTimesbyPlayer(catalog, PlayerName): #Función Pricipal Requerimiento 2
     
     pass
 
-def BeyersstTimesbyAttemptsRange(Lim_inferior,Lim_superior): #Función Pricipal Requerimiento 3
-    pass
+def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Pricipal Requerimiento 3
+    RunsInRange = om.values(catalog["MapByRuns"],Lim_inferior,Lim_superior)
+    CategoryList = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(RunsInRange):
+        lt.addLast(CategoryList,om.valueSet(i))
+    return CategoryList
 def WorstTimesbyDateRange(Fecha_inferior,Fecha_superior): #Función Pricipal Requerimiento 4
     pass
 def RecentAttemptsbyRecordTimeRange(Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
@@ -125,6 +134,13 @@ def comparedates(date1,date2):
         return -1
     else:
         return 0
+def compareRuns(run1,run2):
+    run1,run2 = int(run1),int(run2)
+    if run1 > run2:
+        return 1
+    elif run1 < run2:
+        return -1
+    else:
+        return 0
 # Funciones de ordenamiento
 
-print(time.strptime("86-09-26", "%y-%m-%d"))

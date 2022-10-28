@@ -90,6 +90,8 @@ def load(catalog):
             else:
                 app.append(catalog["model"]["Id_Name_Dict"][i["Game_Id"]])
         printable2.append(app)
+    print("Juegos cargados:",str(lt.size(games)))
+    print("Records de categoría cargados:",str(lt.size(category)))
     print(("Primeros y últimos 3 videojuegos cargados:"))
     print(tabulate(printable1,tablefmt="grid",maxcolwidths=13))
     print("Primeros y ultimos 3 registros cargados")
@@ -128,12 +130,65 @@ def printreq1(catalog,platform,date1,date2):
     print(tabulate(print_list1,tablefmt="grid"))
 def printreq2(catalog):
     pass
-
+def printreq3(catalog,lo,lh):
+    list = controller.BestTimesbyAttemptsRange(catalog,int(lo),int(lh))
+    names = catalog["model"]["Id_Name_Dict"]
+    print_list1 = [["Num_Runs","Count","Details"]]
+    size = 0
+    for i in lt.iterator(list):
+        for e in lt.iterator(i):
+            size += lt.size(e)
+    if lt.size(list) <= 6:
+        for i in lt.iterator(list):
+            print_list2 = [["Name","Category","Subcategory","Num_Runs","Players_0","Country_0","Time_0","Record_Date_0"]]
+            for e in lt.iterator(i):
+                for r in lt.iterator(e):
+                    xd = []
+                    for a in print_list2[0]:
+                        if a != "Name":
+                            xd.append(r[a])
+                        else:
+                            xd.append(names[r["Game_Id"]])
+                    print_list2.append(xd)
+                runs = r["Num_Runs"]
+            print_list1.append([runs,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
+    else:
+        first = lt.subList(list,1,3)
+        last = lt.subList(list,lt.size(list)-2,3)
+        for i in lt.iterator(first):
+            print_list2 = [["Name","Category","Subcategory","Num_Runs","Players_0","Country_0","Time_0","Record_Date_0"]]
+            for e in lt.iterator(i):
+                for r in lt.iterator(e):
+                    xd = []
+                    for a in print_list2[0]:
+                        if a != "Name":
+                            xd.append(r[a])
+                        else:
+                            xd.append(names[r["Game_Id"]])
+                    print_list2.append(xd)
+                runs = r["Num_Runs"]
+            print_list1.append([runs,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])          
+        for i in lt.iterator(last):
+            print_list2 = [["Name","Category","Subcategory","Num_Runs","Players_0","Country_0","Time_0","Record_Date_0"]]
+            for e in lt.iterator(i):
+                for r in lt.iterator(e):
+                    xd = []
+                    for a in print_list2[0]:
+                        if a != "Name":
+                            xd.append(r[a])
+                        else:
+                            xd.append(names[r["Game_Id"]])
+                    print_list2.append(xd)
+                runs = r["Num_Runs"]
+            print_list1.append([runs,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
+    print("Hay",str(size),"registros en el rango.")
+    print(tabulate(print_list1,tablefmt="grid"))
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        catalog = controller.newController()
+        if catalog == None:
+            catalog = controller.newController()
         controller.loadData(catalog,size)
         print("Cargando información de los archivos ....")
         load(catalog)
@@ -147,6 +202,10 @@ while True:
     elif int(inputs[0])==3:
         printreq2(catalog)
 
+    elif int(inputs[0]) == 4:
+        lo = input("Ingrese el limite inferior: ")
+        lh = input("Ingrese el limite superior: ")
+        printreq3(catalog,lo,lh)
     else:
         sys.exit(0)
 sys.exit(0)
