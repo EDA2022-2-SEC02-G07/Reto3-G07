@@ -45,7 +45,8 @@ def newCatalog():
                 "CategoryList":lt.newList("ARRAY_LIST"),
                 "Id_Name_Dict" : {},
                 "MapByPlatform":mp.newMap(),
-                'MapByPlayers':mp.newMap()}
+                'MapByPlayers':mp.newMap(),
+                "MapByRuns":mp.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
@@ -63,6 +64,8 @@ def add_contentCategory(catalog, content):
         if mp.contains(catalog['MapByPlayers'], player3) == False:
             mp.put(catalog['MapByPlayers'], player3, om.newMap(omaptype='RBT'))
     lt.addLast(catalog['CategoryList'], content)
+    if mp.contains(catalog["MapByRuns"],content["Num_Runs"]) == False: #Mapa por # de runs
+        mp.put(catalog["MapByRuns"],content["Num_Runs"],om.newMap(omaptype="RBT"))
     #content['Players_0']
     #for player in content['']
     #Mapa ordendo por jugadores con árboles como valores.
