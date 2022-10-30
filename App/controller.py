@@ -47,7 +47,7 @@ def loadData(control,size):
     loadContentCategory(catalog,size)
     loadContentGames(catalog,size)
 def loadContentCategory(catalog,size):
-    file = 'Speedruns/category_data_urf-8'+size+'.csv'
+    file = 'Speedruns/category_data_utf-8'+size+'.csv'
     contentfile = cf.data_dir + file
     input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
     for content in input_file:
