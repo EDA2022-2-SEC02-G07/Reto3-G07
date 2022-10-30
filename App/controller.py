@@ -66,7 +66,8 @@ def loadContentGames(catalog,size):
 def GamesByPlatform(catalog,platform,date1,date2): #Función Pricipal Requerimiento 1
     return model.GamesByPlatform(catalog["model"],platform,date1,date2)
 
-def BestTimesByPlayer(catalog, player_name):
-    pass
+def BestTimesByPlayer(catalog, player):
+    return model.BestTimesbyPlayer(catalog['model'], player)
+    
 def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Pricipal Requerimiento 3
     return model.BestTimesbyAttemptsRange(catalog["model"],Lim_inferior,Lim_superior)

@@ -25,6 +25,7 @@
  """
 
 
+from platform import platform
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -44,36 +45,24 @@ def newCatalog():
     catalog = {"GamesList":lt.newList("ARRAY_LIST"),
                 "CategoryList":lt.newList("ARRAY_LIST"),
                 "Id_Name_Dict" : {},
+                "Id_Genres_Dict" : {},
+                "Id_Platforms_Dict" : {},
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
                 "MapByRuns":om.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
-    players = lt.newList('ARRAY_LIST')
     content["Num_Runs"] = int(content["Num_Runs"])
-    for player1 in content['Players_0']:
-        player1 = player1.strip()
-        if mp.contains(catalog['MapByPlayers'], player1) == False:
-            mp.put(catalog['MapByPlayers'], player1, om.newMap(omaptype='RBT'))
-    for player2 in content['Players_1']:
-        player2 = player2.strip()
-        if mp.contains(catalog['MapByPlayers'], player2) == False:
-            mp.put(catalog['MapByPlayers'], player2, om.newMap(omaptype='RBT'))
-    for player3 in content['Players_2']:
-        player3 = player3.strip()
-        if mp.contains(catalog['MapByPlayers'], player3) == False:
-            mp.put(catalog['MapByPlayers'], player3, om.newMap(omaptype='RBT'))
+    for player in content['Players_0'].split(','):
+        player = player.strip()
+        if mp.contains(catalog['MapByPlayers'], player) == False:
+            mp.put(catalog['MapByPlayers'], player, om.newMap(omaptype='RBT', comparefunction=compareTime0))
+        map_times = me.getValue(mp.get(catalog['MapByPlayers'], player))
+        if om.contains(map_times, content['Time_0']) == False:
+            mp.put(map_times, content['Time_0'], lt.newList('ARRAY_LIST'))
+        lt.addLast(me.getValue(mp.get(map_times, content['Time_0'])), content)
     lt.addLast(catalog['CategoryList'], content)
-    if om.contains(catalog["MapByRuns"],content["Num_Runs"]) == False: #Mapa por # de runs
-        om.put(catalog["MapByRuns"],content["Num_Runs"],om.newMap(omaptype="RBT"))
-    map_runs = me.getValue(om.get(catalog["MapByRuns"],content["Num_Runs"]))
-    if om.contains(map_runs,content["Time_0"]) == False:
-        om.put(map_runs,content["Time_0"],lt.newList("ARRAY_LIST"))
-    lt.addLast(me.getValue(om.get(map_runs,content["Time_0"])),content)
-    #content['Players_0']
-    #for player in content['']
-    #Mapa ordendo por jugadores con árboles como valores.
 
 def add_contentGames(catalog, content):
     for platform in content["Platforms"].split(","):
@@ -87,6 +76,8 @@ def add_contentGames(catalog, content):
         map_dict["size"] += 1
     lt.addLast(catalog["GamesList"],content)
     catalog["Id_Name_Dict"][content["Game_Id"]] = content["Name"]
+    catalog["Id_Genres_Dict"][content["Game_Id"]] = content["Genres"]
+    catalog["Id_Platforms_Dict"][content["Game_Id"]] = content["Platforms"]
     
 
 # Funciones para creacion de datos
@@ -97,9 +88,13 @@ def GamesByPlatform(catalog,platform,date1,date2): #Función Pricipal Requerimie
     datesList = om.values(platformMapDict["map"],date1,date2)
     return platformMapDict["size"],datesList
 
-def BestTimesbyPlayer(catalog, PlayerName): #Función Pricipal Requerimiento 2
-    
-    pass
+def BestTimesbyPlayer(catalog, player): #Función Pricipal Requerimiento 2
+    playerMapDict = me.getValue(mp.get(catalog['MapByPlayers'], player))
+    valuesPlayer = om.valueSet(playerMapDict)
+    total_num_runs = 0
+    for value in lt.iterator(valuesPlayer):
+        total_num_runs += lt.lastElement(value)['Num_Runs']
+    return playerMapDict, total_num_runs
 
 def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Pricipal Requerimiento 3
     RunsInRange = om.values(catalog["MapByRuns"],Lim_inferior,Lim_superior)
@@ -139,6 +134,13 @@ def compareRuns(run1,run2):
     if run1 > run2:
         return 1
     elif run1 < run2:
+        return -1
+    else:
+        return 0
+def compareTime0(time1, time2):
+    if time1 > time2:
+        return 1
+    elif time1 < time2:
         return -1
     else:
         return 0

@@ -26,6 +26,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
+from DISClib.DataStructures import mapentry as me
 from tabulate  import tabulate
 assert cf
 
@@ -128,8 +129,26 @@ def printreq1(catalog,platform,date1,date2):
             print_list1.append([Date,lt.size(i),tabulate(print_list2,tablefmt="grid")])
     print("Hay",str(size_inrange),"registros en el rango.")
     print(tabulate(print_list1,tablefmt="grid"))
-def printreq2(catalog):
-    pass
+
+def printreq2(catalog, player):
+    mapdict, total_num_runs = controller.BestTimesByPlayer(catalog, player)
+    print('\nEl jugador', player, 'tiene', total_num_runs, 'intentos de speedrun.\n')
+    print(6*'-','Detalles del jugador',player, 6*'-')
+    print('\nEl jugador', player, 'tiene el mejor tiempo de speedruns en', om.size(mapdict), 'registros\n')
+    printlist = [['Time_0', 'Record_Date_0', 'Name', 'Players_0', 'Country_0', 'Num_Runs', 'Platforms', 'Genres', 'Category', 'Subcategory']]
+    for time in lt.iterator(om.keySet(mapdict)):
+        printlist2 = []
+        for value in lt.iterator(me.getValue(om.get(mapdict, time))):
+            for title in printlist[0]:
+                if title != 'Name' and title != 'Platforms' and title != 'Genres':
+                    if value[title] == '':
+                        value[title] = 'Unknown'
+                    printlist2.append(value[title])
+                else:
+                    printlist2.append(catalog['model']['Id_'+title+'_Dict'][value['Game_Id']])
+            printlist.append(printlist2)
+    print(tabulate(printlist, tablefmt='grid'))
+
 def printreq3(catalog,lo,lh):
     list = controller.BestTimesbyAttemptsRange(catalog,int(lo),int(lh))
     names = catalog["model"]["Id_Name_Dict"]
@@ -200,7 +219,8 @@ while True:
         printreq1(catalog,platform,date1,date2)
 
     elif int(inputs[0])==3:
-        printreq2(catalog)
+        player = input('Ingrese el nombre del jugador:')
+        printreq2(catalog, player)
 
     elif int(inputs[0]) == 4:
         lo = input("Ingrese el limite inferior: ")
