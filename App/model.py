@@ -62,6 +62,13 @@ def add_contentCategory(catalog, content):
         if om.contains(map_times, content['Time_0']) == False:
             mp.put(map_times, content['Time_0'], lt.newList('ARRAY_LIST'))
         lt.addLast(me.getValue(mp.get(map_times, content['Time_0'])), content)
+    if om.contains(catalog["MapByRuns"],content["Num_Runs"]) == False: #Mapa por # de runs
+        om.put(catalog["MapByRuns"],content["Num_Runs"],om.newMap(omaptype="RBT",comparefunction=compareRuns))
+    map_runs = me.getValue(om.get(catalog["MapByRuns"],content["Num_Runs"]))
+    if om.contains(map_runs,content["Time_0"]) == False:
+        om.put(map_runs,content["Time_0"],lt.newList("ARRAY_LIST"))
+    lt.addLast(me.getValue(om.get(map_runs,content["Time_0"])),content)
+
     lt.addLast(catalog['CategoryList'], content)
 
 def add_contentGames(catalog, content):
@@ -130,7 +137,7 @@ def comparedates(date1,date2):
     else:
         return 0
 def compareRuns(run1,run2):
-    run1,run2 = int(run1),int(run2)
+    run1,run2 = float(run1),float(run2)
     if run1 > run2:
         return 1
     elif run1 < run2:

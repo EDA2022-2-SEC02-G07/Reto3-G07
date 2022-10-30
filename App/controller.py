@@ -51,6 +51,9 @@ def loadContentCategory(catalog,size):
     contentfile = cf.data_dir + file
     input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
     for content in input_file:
+        for key in content:
+            if content[key] == "":
+                content[key] = "Unknown"
         model.add_contentCategory(catalog, content)
     return catalog
 def loadContentGames(catalog,size):
@@ -58,6 +61,9 @@ def loadContentGames(catalog,size):
     contentfile = cf.data_dir + file
     input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
     for content in input_file:
+        for key in content:
+            if content[key] == "":
+                content[key] = "Unknown"
         model.add_contentGames(catalog, content)
     return catalog
 # Funciones de ordenamiento

@@ -41,8 +41,8 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- Reportar los 5 videojuegos más recientes de una plataforma")
-    print("3- Reportar los registros más veloces de los mejores tiempos de un jugador en específico")
+    print("2- Encontrar los videojuegos publicados en un rango de tiempo para una plataforma")
+    print("3- Encontrar los 5 registros con menor tiempo para un jugador en específico")
     print("4- Reportar los registros más veloces dentro de un rango de intentos")
     print("5- Reportar los registros más lentos dentro de un rango de fechas")
     print("6- Reportar los registros más recientes en un rango de tiempos récord")
@@ -201,6 +201,7 @@ def printreq3(catalog,lo,lh):
                 runs = r["Num_Runs"]
             print_list1.append([runs,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
     print("Hay",str(size),"registros en el rango.")
+    print("Hay",str(lt.size(list)),"elementos en el rango.")
     print(tabulate(print_list1,tablefmt="grid"))
 while True:
     printMenu()
