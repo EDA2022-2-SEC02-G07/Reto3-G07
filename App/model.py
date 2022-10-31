@@ -104,7 +104,8 @@ def BestTimesbyPlayer(catalog, player): #Función Pricipal Requerimiento 2
     return playerMapDict, total_num_runs
 
 def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Pricipal Requerimiento 3
-    RunsInRange = om.values(catalog["MapByRuns"],Lim_inferior,Lim_superior)
+    #print(catalog["MapByRuns"])
+    RunsInRange = om.values(catalog["MapByRuns"],float(Lim_inferior),float(Lim_superior))
     CategoryList = lt.newList("ARRAY_LIST")
     for i in lt.iterator(RunsInRange):
         lt.addLast(CategoryList,om.valueSet(i))
@@ -112,7 +113,7 @@ def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Prici
 def WorstTimesbyDateRange(Fecha_inferior,Fecha_superior): #Función Pricipal Requerimiento 4
     pass
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
-    AttemptsinRangeDict = om.values(catalog['MapByPlayers'],Tiempo_inferior,Tiempo_superior)
+    AttemptsinRangeDict = om.keys(catalog['MapByPlayers'],Tiempo_inferior,Tiempo_superior)
     TimesList = lt.newList("ARRAY_LIST")
     for i in lt.iterator(AttemptsinRangeDict):
         lt.addLast(TimesList,om.valueSet(i))
