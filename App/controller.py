@@ -77,3 +77,6 @@ def BestTimesByPlayer(catalog, player):
     
 def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Pricipal Requerimiento 3
     return model.BestTimesbyAttemptsRange(catalog["model"],Lim_inferior,Lim_superior)
+
+def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
+    return model.BestTimesbyAttemptsRange(catalog['model'],Tiempo_inferior,Tiempo_superior)
