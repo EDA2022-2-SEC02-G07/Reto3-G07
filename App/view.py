@@ -205,59 +205,9 @@ def printreq3(catalog,lo,lh):
     print(tabulate(print_list1,tablefmt="grid"))
 
 def printreq5(catalog,Tiempo_inferior,Tiempo_superior):
-    lista = controller.RecentAttemptsbyRecordTimeRange(catalog,float(Tiempo_inferior),float(Tiempo_superior))
-    names = catalog["model"]["Id_Name_Dict"]
-    print_list1 = [["Time_0","Count","Details"]]
-    size = 0
+    lista = controller.RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior)
     for i in lt.iterator(lista):
-        for j in lt.iterator(i):
-            size += lt.size(j)
-    if lt.size(lista) <= 6:
-        for value in lt.iterator(lista):
-            print_list2 = [["Num_Runs","Record_Date_0","Name","Players_0","Country_0","Platforms","Genres","Category","Subcategory","Release_Date","Total_Runs"]]
-            for elem in lt.iterator(value):
-                for r in lt.iterator(elem):
-                    lista_ = []
-                    for player in print_list2[0]:
-                        if player != "Name":
-                            lista_.append(r[player])
-                        else:
-                            lista_.append(names[r["Game_Id"]])
-                    print_list2.append(lista_)
-                runs = r["Num_Runs"]
-            print_list1.append([runs,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
-    else:
-        first = lt.subList(lista,1,3)
-        last = lt.subList(lista,lt.size(lista)-2,3)
-        for i in lt.iterator(first):
-            print_list2 = [["Num_Runs","Record_Date_0","Name","Players_0","Country_0","Platforms","Genres","Category","Subcategory","Release_Date","Total_Runs"]]
-            for e in lt.iterator(i):
-                for r in lt.iterator(e):
-                    xd = []
-                    for a in print_list2[0]:
-                        if a != "Name":
-                            xd.append(r[a])
-                        else:
-                            xd.append(names[r["Game_Id"]])
-                    print_list2.append(xd)
-                runs = r["Num_Runs"]
-            print_list1.append([runs,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])          
-        for i in lt.iterator(last):
-            print_list2 = [["Name","Category","Subcategory","Num_Runs","Players_0","Country_0","Time_0","Record_Date_0"]]
-            for e in lt.iterator(i):
-                for r in lt.iterator(e):
-                    xd = []
-                    for a in print_list2[0]:
-                        if a != "Name":
-                            xd.append(r[a])
-                        else:
-                            xd.append(names[r["Game_Id"]])
-                    print_list2.append(xd)
-                runs = r["Num_Runs"]
-            print_list1.append([runs,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
-    print("Hay",str(size),"registros en el rango.")
-    print("Hay",str(lt.size(lista)),"elementos en el rango.")
-    print(tabulate(print_list1,tablefmt="grid"))
+        print(i)
 
 while True:
     printMenu()

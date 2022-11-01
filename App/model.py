@@ -49,7 +49,8 @@ def newCatalog():
                 "Id_Platforms_Dict" : {},
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
-                "MapByRuns":om.newMap()}
+                "MapByRuns":om.newMap(),
+                "MapByTime_0":om.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
@@ -68,7 +69,9 @@ def add_contentCategory(catalog, content):
     if om.contains(map_runs,content["Time_0"]) == False:
         om.put(map_runs,content["Time_0"],lt.newList("ARRAY_LIST"))
     lt.addLast(me.getValue(om.get(map_runs,content["Time_0"])),content)
-
+    if om.contains(catalog["MapByTime_0"],content["Time_0"]) == False:
+        om.put(catalog["MapByTime_0"],content["Time_0"],lt.newList("ARRAY_LIST"))
+    lt.addLast(me.getValue(om.get(catalog["MapByTime_0"],content["Time_0"])),content)
     lt.addLast(catalog['CategoryList'], content)
 
 def add_contentGames(catalog, content):
@@ -85,6 +88,7 @@ def add_contentGames(catalog, content):
     catalog["Id_Name_Dict"][content["Game_Id"]] = content["Name"]
     catalog["Id_Genres_Dict"][content["Game_Id"]] = content["Genres"]
     catalog["Id_Platforms_Dict"][content["Game_Id"]] = content["Platforms"]
+
     
 
 # Funciones para creacion de datos
@@ -112,11 +116,12 @@ def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Prici
 def WorstTimesbyDateRange(Fecha_inferior,Fecha_superior): #Función Pricipal Requerimiento 4
     pass
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
-    AttemptsinRange = om.keys(catalog['MapByPlayers'],float(Tiempo_inferior),float(Tiempo_superior))
-    TimesList = lt.newList("ARRAY_LIST")
+    AttemptsinRange = om.values(catalog["MapByTime_0"],Tiempo_inferior,Tiempo_superior)
+    TimeList = lt.newList("ARRAY_LIST")
     for i in lt.iterator(AttemptsinRange):
-        lt.addLast(TimesList,om.valueSet(i))
-    return TimesList
+        for e in lt.iterator(i):
+            lt.addLast(TimeList)
+    return TimeList
 
 def HistogramofTimesbyYear(N_segmentos,N_niveles,anio,tiempo_012): #Función Pricipal Requerimiento 6
     pass
