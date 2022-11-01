@@ -205,7 +205,7 @@ def printreq3(catalog,lo,lh):
     print(tabulate(print_list1,tablefmt="grid"))
 
 def printreq5(catalog,Tiempo_inferior,Tiempo_superior):
-    lista = controller.BestTimesbyAttemptsRange(catalog,float(Tiempo_inferior),float(Tiempo_superior))
+    lista = controller.RecentAttemptsbyRecordTimeRange(catalog,float(Tiempo_inferior),float(Tiempo_superior))
     names = catalog["model"]["Id_Name_Dict"]
     print_list1 = [["Time_0","Count","Details"]]
     size = 0
