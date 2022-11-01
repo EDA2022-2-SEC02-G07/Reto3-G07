@@ -47,10 +47,11 @@ def newCatalog():
                 "Id_Name_Dict" : {},
                 "Id_Genres_Dict" : {},
                 "Id_Platforms_Dict" : {},
+                "Id_ReleaseDate_Dict":{},
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
                 "MapByRuns":om.newMap(),
-                "MapByTime_0":om.newMap()}
+                "MapByTime_0":om.newMap(comparefunction=compareRuns)}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
@@ -88,6 +89,7 @@ def add_contentGames(catalog, content):
     catalog["Id_Name_Dict"][content["Game_Id"]] = content["Name"]
     catalog["Id_Genres_Dict"][content["Game_Id"]] = content["Genres"]
     catalog["Id_Platforms_Dict"][content["Game_Id"]] = content["Platforms"]
+    catalog["Id_ReleaseDate_Dict"][content["Game_Id"]] = content["Release_Date"]
 
     
 
@@ -117,11 +119,7 @@ def WorstTimesbyDateRange(Fecha_inferior,Fecha_superior): #Función Pricipal Req
     pass
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
     AttemptsinRange = om.values(catalog["MapByTime_0"],Tiempo_inferior,Tiempo_superior)
-    TimeList = lt.newList("ARRAY_LIST")
-    for i in lt.iterator(AttemptsinRange):
-        for e in lt.iterator(i):
-            lt.addLast(TimeList)
-    return TimeList
+    return AttemptsinRange
 
 def HistogramofTimesbyYear(N_segmentos,N_niveles,anio,tiempo_012): #Función Pricipal Requerimiento 6
     pass

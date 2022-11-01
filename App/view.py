@@ -206,8 +206,73 @@ def printreq3(catalog,lo,lh):
 
 def printreq5(catalog,Tiempo_inferior,Tiempo_superior):
     lista = controller.RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior)
-    for i in lt.iterator(lista):
-        print(i)
+    print_list = [["Time_0","Count","Details"]]
+    names = catalog["model"]["Id_Name_Dict"]
+    platforms = catalog["model"]["Id_Platforms_Dict"]
+    release_dates = catalog["model"]["Id_ReleaseDate_Dict"]
+    genres = catalog["model"]["Id_Genres_Dict"]
+    if lt.size(lista) <= 6:
+        for i in lt.iterator(lista):
+            print_list2 = [["Num_Runs","Record_Date_0","Name","Players_0","Country_0","Platforms","Genres","Category",
+                                "Subcategory","Release_Date","Num_Runs"]]
+            for e in lt.iterator(i):
+                list = []
+                for r in print_list2[0]:
+                    if r not in ["Name","Platforms","Genres","Release_Date"]:
+                        list.append(e[r])
+                    elif r == "Name":
+                        list.append(names[e["Game_Id"]])
+                    elif r == "Platforms":
+                        list.append(platforms[e["Game_Id"]])
+                    elif r == "Genres":
+                        list.append(genres[e["Game_Id"]])
+                    elif r == "Release_Date":
+                        list.append(release_dates[e["Game_Id"]])
+                time = e["Time_0"]
+                print_list2.append(list)
+            print_list.append([time,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
+    else:
+        first = lt.subList(lista,1,3)
+        last = lt.subList(lista,lt.size(lista)-2,3) 
+        for i in lt.iterator(first):
+            print_list2 = [["Num_Runs","Record_Date_0","Name","Players_0","Country_0","Platforms","Genres","Category",
+                                "Subcategory","Release_Date","Num_Runs"]]
+            for e in lt.iterator(i):
+                list = []
+                for r in print_list2[0]:
+                    if r not in ["Name","Platforms","Genres","Release_Date"]:
+                        list.append(e[r])
+                    elif r == "Name":
+                        list.append(names[e["Game_Id"]])
+                    elif r == "Platforms":
+                        list.append(platforms[e["Game_Id"]])
+                    elif r == "Genres":
+                        list.append(genres[e["Game_Id"]])
+                    elif r == "Release_Date":
+                        list.append(release_dates[e["Game_Id"]])
+                time = e["Time_0"]
+                print_list2.append(list)
+            print_list.append([time,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
+        for i in lt.iterator(last):
+            print_list2 = [["Num_Runs","Record_Date_0","Name","Players_0","Country_0","Platforms","Genres","Category",
+                                "Subcategory","Release_Date","Num_Runs"]]
+            for e in lt.iterator(i):
+                list = []
+                for r in print_list2[0]:
+                    if r not in ["Name","Platforms","Genres","Release_Date"]:
+                        list.append(e[r])
+                    elif r == "Name":
+                        list.append(names[e["Game_Id"]])
+                    elif r == "Platforms":
+                        list.append(platforms[e["Game_Id"]])
+                    elif r == "Genres":
+                        list.append(genres[e["Game_Id"]])
+                    elif r == "Release_Date":
+                        list.append(release_dates[e["Game_Id"]])
+                time = e["Time_0"]
+                print_list2.append(list)
+            print_list.append([time,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
+    print(tabulate(print_list,tablefmt="grid"))
 
 while True:
     printMenu()
