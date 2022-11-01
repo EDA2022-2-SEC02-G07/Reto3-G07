@@ -113,10 +113,11 @@ def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Prici
 def WorstTimesbyDateRange(Fecha_inferior,Fecha_superior): #Función Pricipal Requerimiento 4
     pass
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
-    AttemptsinRangeDict = om.keys(catalog['MapByPlayers'],Tiempo_inferior,Tiempo_superior)
+    AttemptsinRangeDict = om.keys(catalog['MapByPlayers'],float(Tiempo_inferior),float(Tiempo_superior))
     TimesList = lt.newList("ARRAY_LIST")
     for i in lt.iterator(AttemptsinRangeDict):
         lt.addLast(TimesList,om.valueSet(i))
+    
     return TimesList
 
 def HistogramofTimesbyYear(N_segmentos,N_niveles,anio,tiempo_012): #Función Pricipal Requerimiento 6
