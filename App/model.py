@@ -34,6 +34,7 @@ from DISClib.ADT import orderedmap as om
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
 import time
+from math import log
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -48,6 +49,10 @@ def newCatalog():
                 "Id_Genres_Dict" : {},
                 "Id_Platforms_Dict" : {},
                 "Id_ReleaseDate_Dict":{},
+                ###7###
+                "Number_Of_RegistersRuns_ById":{"Register":{},"Runs":{}},
+                "MapByPlatformAndRevenue":mp.newMap(),
+                ###7###
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
                 "MapByRuns":om.newMap(),
@@ -74,7 +79,11 @@ def add_contentCategory(catalog, content):
         om.put(catalog["MapByTime_0"],content["Time_0"],lt.newList("ARRAY_LIST"))
     lt.addLast(me.getValue(om.get(catalog["MapByTime_0"],content["Time_0"])),content)
     lt.addLast(catalog['CategoryList'], content)
-
+    ###7###
+    if content["Game_Id"] not in catalog["Number_Of_RegistersRuns_ById"]:
+        catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]] = 0
+    catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]] += 1    
+    ###7###
 def add_contentGames(catalog, content):
     for platform in content["Platforms"].split(","):
         platform = platform.strip()
@@ -90,9 +99,24 @@ def add_contentGames(catalog, content):
     catalog["Id_Genres_Dict"][content["Game_Id"]] = content["Genres"]
     catalog["Id_Platforms_Dict"][content["Game_Id"]] = content["Platforms"]
     catalog["Id_ReleaseDate_Dict"][content["Game_Id"]] = content["Release_Date"]
-
-    
-
+    catalog["Number_Of_RegistersRuns_ById"]["Runs"][content["Game_Id"]] = content["Total_Runs"]
+def addcontentStreamReveue(catalog,content):
+    avg,revenue = Revenue(catalog,content)
+    content["Time_Avg"] = avg
+    gt = catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]]
+    for platform in catalog["Id_Platforms_Dict"][content["Game_Id"]].split(","):
+        platform = platform.strip()
+        pt = me.getValue(mp.get(catalog["MapByPlatform"],platform))["size"]
+        MarketShare = gt/pt
+        stream_revenue = revenue*MarketShare
+        content["Market_Share"] = MarketShare
+        content["Stream_Revenue"] = stream_revenue
+        if mp.contains(catalog["MapByPlatformAndRevenue"],platform) == False:
+            mp.put(catalog["MapByPlatformAndRevenue"],platform,om.newMap())
+        map_ = me.getValue(mp.get(catalog["MapByPlatformAndRevenue"],platform))
+        if om.contains(map_,stream_revenue):
+            om.put(map_,stream_revenue,lt.newList("ARRAY_LIST"))
+        lt.addLast(me.getValue(om.get(map_,stream_revenue)),content)
 # Funciones para creacion de datos
 
 # Funciones de consulta
@@ -127,6 +151,31 @@ def TopFiveStreamingGames(Platform): #Función Pricipal Requerimiento 7
     pass
 def RecordsbyCountry(Anio__publicacion,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 7
     pass
+def Revenue(catalog,content): #Función Auxiliar Requerimiento 7
+    if len(content["Release_Date"]) == 8:
+        release_year = int(time.strptime(content["Release_Date"], "%y-%m-%d")[0])
+    else:
+        release_year = int(time.strptime(content["Release_Date"], "%Y-%m-%d")[0])
+    if release_year >= 2018:
+        antiquity = release_year - 2017
+    elif release_year < 1998:
+        antiquity = 5
+    else:
+        antiquity = (-0.2*release_year) + 404.6
+    popularity = log(int(catalog["Number_Of_RegistersRuns_ById"]["Runs"][content["Game_Id"]]))
+    sum = 0
+    div = 0
+    if content["Time_0"] != "":
+        sum += float(content["Time_0"])
+        div += 1
+    elif content["Time_1"] != "":
+        sum += float(content["Time_1"])
+        div += 1
+    elif content["Time_2"] != "":
+        sum += float(content["Time_2"])
+        div += 1
+    avg = sum/div
+    return (avg,((popularity*avg)/antiquity))
 # Funciones utilizadas para comparar elementos dentro de una lista
 def comparedates(date1,date2):
     if len(date1) == 8:
@@ -160,4 +209,3 @@ def compareTime0(time1, time2):
     else:
         return 0
 # Funciones de ordenamiento
-

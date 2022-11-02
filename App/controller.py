@@ -65,6 +65,8 @@ def loadContentGames(catalog,size):
             if content[key] == "":
                 content[key] = "Unknown"
         model.add_contentGames(catalog, content)
+    for content in input_file:
+        model.addcontentStreamReveue(catalog,content)
     return catalog
 # Funciones de ordenamiento
 
