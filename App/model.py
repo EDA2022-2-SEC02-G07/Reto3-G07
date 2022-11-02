@@ -115,17 +115,17 @@ def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Prici
     for i in lt.iterator(RunsInRange):
         lt.addLast(CategoryList,om.valueSet(i))
     return CategoryList
-def WorstTimesbyDateRange(Fecha_inferior,Fecha_superior): #Función Pricipal Requerimiento 4
+def WorstTimesbyDateRange(catalog,Fecha_inferior,Fecha_superior): #Función Pricipal Requerimiento 4
     pass
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
     AttemptsinRange = om.values(catalog["MapByTime_0"],Tiempo_inferior,Tiempo_superior)
     return AttemptsinRange
 
-def HistogramofTimesbyYear(N_segmentos,N_niveles,anio,tiempo_012): #Función Pricipal Requerimiento 6
+def HistogramofTimesbyYear(catalog,anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades): #Función Pricipal Requerimiento 6
     pass
-def TopFiveStreamingGames(Platform): #Función Pricipal Requerimiento 7
+def TopFiveStreamingGames(catalog,Platform): #Función Pricipal Requerimiento 7
     pass
-def RecordsbyCountry(Anio__publicacion,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 7
+def RecordsbyCountry(catalog,Anio__publicacion,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 7
     pass
 # Funciones utilizadas para comparar elementos dentro de una lista
 def comparedates(date1,date2):

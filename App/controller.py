@@ -80,3 +80,6 @@ def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Prici
 
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
     return model.RecentAttemptsbyRecordTimeRange(catalog['model'],Tiempo_inferior,Tiempo_superior)
+
+def HistogramofTimesbyYear(catalog,anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades): #Función Pricipal Requerimiento 6
+    return model.HistogramofTimesbyYear(catalog['model'],anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades)

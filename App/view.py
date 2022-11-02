@@ -274,6 +274,9 @@ def printreq5(catalog,Tiempo_inferior,Tiempo_superior):
             print_list.append([time,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
     print(tabulate(print_list,tablefmt="grid"))
 
+def printreq6(catalog,anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades):
+    pass
+
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
@@ -302,6 +305,22 @@ while True:
         lo = input("Ingrese el tiempo inferior: ")
         lh = input("Ingrese el tiempo superior: ")
         printreq5(catalog,lo,lh)
+    elif int(inputs[0]) == 7:
+        anio_lo = input("Ingrese el año inferior: ")
+        anio_hi = input("Ingrese el año superior: ")
+        N_segmentos = input("Ingrese el numero de segmentos en que se divide el rango de propiedad en el histograma: ")
+        N_segmentos = input("Ingrese el numero de niveles en que se dividen las marcas de jugadores en el histograma: ")
+        print("\n¿Desea consultar las siguientes propiedades de los registros?")
+        print("- El mejor tiempo registrado, el segundo mejor tiempo, el tercer mejor tiempo")
+        print("- El tiempo promedio registrado")
+        print("- El número de intentos registrados")
+        respuesta = input("Ingrese 1 para 'si' o 0 para 'No':" )
+        if int(respuesta) == 1:
+            propiedades = True
+        else:
+            propiedades = False
+
+        printreq6(catalog,anio_lo,anio_hi,N_segmentos,N_segmentos,propiedades)
     else:
         sys.exit(0)
 sys.exit(0)
