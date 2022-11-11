@@ -46,6 +46,7 @@ def loadData(control,size):
     catalog = control['model']
     loadContentCategory(catalog,size)
     loadContentGames(catalog,size)
+    loadContentRevenue(catalog,size)
 def loadContentCategory(catalog,size):
     file = 'Speedruns/category_data_utf-8'+size+'.csv'
     contentfile = cf.data_dir + file
@@ -65,6 +66,11 @@ def loadContentGames(catalog,size):
             if content[key] == "":
                 content[key] = "Unknown"
         model.add_contentGames(catalog, content)
+    return catalog
+def loadContentRevenue(catalog,size):
+    file = 'Speedruns/category_data_utf-8'+size+'.csv'
+    contentfile = cf.data_dir + file
+    input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
     for content in input_file:
         model.addcontentStreamReveue(catalog,content)
     return catalog
@@ -82,3 +88,5 @@ def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Prici
 
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
     return model.RecentAttemptsbyRecordTimeRange(catalog['model'],Tiempo_inferior,Tiempo_superior)
+def TopNRevenueGames(catalog,platform,N): #Función Pricipal Requerimiento 7
+    return model.TopNRevenueGames(catalog["model"],platform,N)

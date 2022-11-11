@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from tkinter import N
 from traceback import print_list
 import config as cf
 import sys
@@ -272,8 +273,16 @@ def printreq5(catalog,Tiempo_inferior,Tiempo_superior):
                 time = e["Time_0"]
                 print_list2.append(list)
             print_list.append([time,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
+    print(tabulate(print_list,tablefmt="grid",maxcolwidths=13))
+def printreq7(catalog,platform,N):
+    list = controller.TopNRevenueGames(catalog,platform,int(N))
+    print_list = [["Name","Release_Date","Platforms","Genres","Stream_Revenue","Market_Share","Time_Avg","Total_Runs"]]
+    for i in lt.iterator(list):
+        xd = []
+        for e in print_list[0]:
+          xd.append(i[e])
+        print_list.append(xd)  
     print(tabulate(print_list,tablefmt="grid"))
-
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
@@ -302,6 +311,10 @@ while True:
         lo = input("Ingrese el tiempo inferior: ")
         lh = input("Ingrese el tiempo superior: ")
         printreq5(catalog,lo,lh)
+    elif int(inputs[0]) == 8:
+        platform = input("Ingrese la plataforma: ")
+        N = input("Ingrese el numero N: ")
+        printreq7(catalog,platform,N)
     else:
         sys.exit(0)
 sys.exit(0)
