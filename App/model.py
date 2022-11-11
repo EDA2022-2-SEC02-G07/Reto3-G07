@@ -99,7 +99,7 @@ def add_contentGames(catalog, content):
 def GamesByPlatform(catalog,platform,date1,date2): #Función Pricipal Requerimiento 1
     platformMapDict = me.getValue(mp.get(catalog["MapByPlatform"],platform))
     datesList = om.values(platformMapDict["map"],date1,date2)
-    return platformMapDict["size"],datesList
+    return platformMapDict["size"],reverselist(datesList)
 
 def BestTimesbyPlayer(catalog, player): #Función Pricipal Requerimiento 2
     playerMapDict = me.getValue(mp.get(catalog['MapByPlayers'], player))
@@ -127,6 +127,14 @@ def TopFiveStreamingGames(catalog,Platform): #Función Pricipal Requerimiento 7
     pass
 def RecordsbyCountry(catalog,Anio__publicacion,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 7
     pass
+def reverselist(list): #Función para invertir el orden de una lista
+    li = 1
+    lo = lt.size(list)
+    while li <lo:
+        lt.exchange(list,li,lo)
+        li +=1
+        lo -= 1
+    return list
 # Funciones utilizadas para comparar elementos dentro de una lista
 def comparedates(date1,date2):
     if len(date1) == 8:
