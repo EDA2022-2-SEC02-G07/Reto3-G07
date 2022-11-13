@@ -113,7 +113,7 @@ def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Prici
     RunsInRange = om.values(catalog["MapByRuns"],float(Lim_inferior),float(Lim_superior))
     CategoryList = lt.newList("ARRAY_LIST")
     for i in lt.iterator(RunsInRange):
-        lt.addLast(CategoryList,om.valueSet(i))
+        lt.addLast(CategoryList,reverselist(om.valueSet(i)))
     return CategoryList
 def WorstTimesbyDateRange(catalog,Fecha_inferior,Fecha_superior): #Función Pricipal Requerimiento 4
     pass
