@@ -46,6 +46,7 @@ def loadData(control,size):
     catalog = control['model']
     loadContentCategory(catalog,size)
     loadContentGames(catalog,size)
+    loadContentRevenue(catalog,size)
 def loadContentCategory(catalog,size):
     file = 'Speedruns/category_data_utf-8'+size+'.csv'
     contentfile = cf.data_dir + file
@@ -66,6 +67,13 @@ def loadContentGames(catalog,size):
                 content[key] = "Unknown"
         model.add_contentGames(catalog, content)
     return catalog
+def loadContentRevenue(catalog,size):
+    file = 'Speedruns/category_data_utf-8'+size+'.csv'
+    contentfile = cf.data_dir + file
+    input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
+    for content in input_file:
+        model.addcontentStreamReveue(catalog,content)
+    return catalog
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -83,3 +91,5 @@ def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #F
 
 def HistogramofTimesbyYear(catalog,anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades): #Función Pricipal Requerimiento 6
     return model.HistogramofTimesbyYear(catalog['model'],anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades)
+def TopNRevenueGames(catalog,platform,N):
+    return model.TopNRevenueGames(catalog["model"],platform,N)

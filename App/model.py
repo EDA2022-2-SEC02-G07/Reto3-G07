@@ -25,7 +25,7 @@
  """
 
 
-from platform import platform
+from math import log
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -51,7 +51,9 @@ def newCatalog():
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
                 "MapByRuns":om.newMap(),
-                "MapByTime_0":om.newMap(comparefunction=compareRuns)}
+                "MapByTime_0":om.newMap(comparefunction=compareRuns),
+                "Number_Of_RegistersRuns_ById":{"Register":{},"Runs":{}},
+                "MapByPlatformAndRevenue":mp.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
@@ -74,7 +76,10 @@ def add_contentCategory(catalog, content):
         om.put(catalog["MapByTime_0"],content["Time_0"],lt.newList("ARRAY_LIST"))
     lt.addLast(me.getValue(om.get(catalog["MapByTime_0"],content["Time_0"])),content)
     lt.addLast(catalog['CategoryList'], content)
-
+    if content["Misc"] == "False":
+        if content["Game_Id"] not in catalog["Number_Of_RegistersRuns_ById"]["Register"]:
+            catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]] = 0
+        catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]] += 1
 def add_contentGames(catalog, content):
     for platform in content["Platforms"].split(","):
         platform = platform.strip()
@@ -90,8 +95,30 @@ def add_contentGames(catalog, content):
     catalog["Id_Genres_Dict"][content["Game_Id"]] = content["Genres"]
     catalog["Id_Platforms_Dict"][content["Game_Id"]] = content["Platforms"]
     catalog["Id_ReleaseDate_Dict"][content["Game_Id"]] = content["Release_Date"]
-
-    
+    catalog["Number_Of_RegistersRuns_ById"]["Runs"][content["Game_Id"]] = content["Total_Runs"]
+def addcontentStreamReveue(catalog,content):
+    if (content["Misc"]) == "False":
+        avg,revenue = Revenue(catalog,content)
+        content["Time_Avg"] = round(avg,2)
+        gt = catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]]
+        content["Genres"] = catalog["Id_Genres_Dict"][content["Game_Id"]]
+        content["Platforms"] = catalog["Id_Platforms_Dict"][content["Game_Id"]]
+        content["Name"] = catalog["Id_Name_Dict"][content["Game_Id"]]
+        content["Release_Date"] = catalog["Id_ReleaseDate_Dict"][content["Game_Id"]]
+        content["Total_Runs"] = catalog["Number_Of_RegistersRuns_ById"]["Runs"][content["Game_Id"]]
+        for platform in (catalog["Id_Platforms_Dict"][content["Game_Id"]]).split(","):
+            platform = platform.strip()
+            pt = me.getValue(mp.get(catalog["MapByPlatform"],platform))["size"] 
+            MarketShare = gt/pt
+            stream_revenue = round(revenue*MarketShare,2)
+            content["Market_Share"] = round(MarketShare,2)
+            content["Stream_Revenue"] = stream_revenue
+            if mp.contains(catalog["MapByPlatformAndRevenue"],platform) == False:
+                mp.put(catalog["MapByPlatformAndRevenue"],platform,om.newMap())
+            map_ = me.getValue(mp.get(catalog["MapByPlatformAndRevenue"],platform))
+            if om.contains(map_,stream_revenue) == False:
+                om.put(map_,stream_revenue,lt.newList("ARRAY_LIST"))
+            lt.addLast(me.getValue(om.get(map_,stream_revenue)),content.copy())   
 
 # Funciones para creacion de datos
 
@@ -123,9 +150,48 @@ def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #F
 
 def HistogramofTimesbyYear(catalog,anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades): #Función Pricipal Requerimiento 6
     pass
-def TopFiveStreamingGames(catalog,Platform): #Función Pricipal Requerimiento 7
-    pass
-def RecordsbyCountry(catalog,Anio__publicacion,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 7
+def TopNRevenueGames(catalog,platform,N): #Función Pricipal Requerimiento 7
+    size = me.getValue(mp.get(catalog["MapByPlatform"],platform))["size"]
+    MapByPlatformAndRevenue = catalog["MapByPlatformAndRevenue"]
+    MapByRevenue = me.getValue(mp.get(MapByPlatformAndRevenue,platform))
+    list_ = lt.newList("ARRAY_LIST")
+    print(catalog["Number_Of_RegistersRuns_ById"]["Register"]["180"])
+    high = om.maxKey(MapByRevenue)
+    low = om.select(MapByRevenue,lt.size(om.keySet(MapByRevenue))-N)
+    Values = om.values(MapByRevenue,low,high)
+    for i in lt.iterator(Values):
+        for e in lt.iterator(i):
+            lt.addLast(list_,e)
+    if lt.size(list_) > N:
+        list_ = lt.subList(list_,lt.size(list_)-N+1,N)
+    return reverselist(list_),size
+def Revenue(catalog,content): #Función Auxiliar Requerimiento 7
+    if len(catalog["Id_ReleaseDate_Dict"][content["Game_Id"]]) == 8:
+        release_year = int(time.strptime(catalog["Id_ReleaseDate_Dict"][content["Game_Id"]], "%y-%m-%d")[0])
+    else:
+        release_year = int(time.strptime(catalog["Id_ReleaseDate_Dict"][content["Game_Id"]], "%Y-%m-%d")[0])
+    if release_year >= 2018:
+        antiquity = release_year - 2017
+    elif release_year < 1998:
+        antiquity = 5
+    else:
+        antiquity = (-0.2*release_year) + 404.6
+    popularity = log(int(catalog["Number_Of_RegistersRuns_ById"]["Runs"][content["Game_Id"]]))
+    sum = 0
+    div = 0
+    if content["Time_0"] != "":
+        sum += float(content["Time_0"])
+        div += 1
+    if content["Time_1"] != "":
+        sum += float(content["Time_1"])
+        div += 1
+    if content["Time_2"] != "":
+        sum += float(content["Time_2"])
+        div += 1
+    avg = sum/div
+    return avg,(popularity*(avg/60))/antiquity
+
+def RecordsbyCountry(catalog,Anio__publicacion,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 8
     pass
 def reverselist(list): #Función para invertir el orden de una lista
     li = 1

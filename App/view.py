@@ -276,7 +276,16 @@ def printreq5(catalog,Tiempo_inferior,Tiempo_superior):
 
 def printreq6(catalog,anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades):
     pass
-
+def printreq7(catalog,platform,N):
+    list,size = controller.TopNRevenueGames(catalog,platform,int(N))
+    print("Hay",str(size),"registros para",platform+".")
+    print_list = [["Name","Release_Date","Platforms","Genres","Stream_Revenue","Market_Share","Time_Avg","Total_Runs"]]
+    for i in lt.iterator(list):
+        xd = []
+        for e in print_list[0]:
+          xd.append(i[e])
+        print_list.append(xd)  
+    print(tabulate(print_list,tablefmt="grid",maxcolwidths=15))
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
@@ -309,7 +318,7 @@ while True:
         anio_lo = input("Ingrese el año inferior: ")
         anio_hi = input("Ingrese el año superior: ")
         N_segmentos = input("Ingrese el numero de segmentos en que se divide el rango de propiedad en el histograma: ")
-        N_segmentos = input("Ingrese el numero de niveles en que se dividen las marcas de jugadores en el histograma: ")
+        N_niveles = input("Ingrese el numero de niveles en que se dividen las marcas de jugadores en el histograma: ")
         print("\n¿Desea consultar las siguientes propiedades de los registros?")
         print("- El mejor tiempo registrado, el segundo mejor tiempo, el tercer mejor tiempo")
         print("- El tiempo promedio registrado")
@@ -320,7 +329,12 @@ while True:
         else:
             propiedades = False
 
-        printreq6(catalog,anio_lo,anio_hi,N_segmentos,N_segmentos,propiedades)
+        printreq6(catalog,anio_lo,anio_hi,N_segmentos,N_segmentos,N_niveles,propiedades)
+    elif int(inputs[0]) == 8:
+        platform = input("Ingrese la plataforma: ")
+        N = input("Ingrese el numero N: ")
+        printreq7(catalog,platform,N)
+        
     else:
         sys.exit(0)
 sys.exit(0)
