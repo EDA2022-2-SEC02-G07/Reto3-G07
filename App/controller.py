@@ -44,9 +44,10 @@ def loadData(control,size):
     estructura de datos
     """
     catalog = control['model']
-    loadContentCategory(catalog,size)
     loadContentGames(catalog,size)
+    loadContentCategory(catalog,size)
     loadContentRevenue(catalog,size)
+    print(catalog["Platform_count"])
 def loadContentCategory(catalog,size):
     file = 'Speedruns/category_data_utf-8'+size+'.csv'
     contentfile = cf.data_dir + file

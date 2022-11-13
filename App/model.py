@@ -54,7 +54,8 @@ def newCatalog():
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
                 "MapByRuns":om.newMap(),
-                "MapByTime_0":om.newMap(comparefunction=compareRuns)}
+                "MapByTime_0":om.newMap(comparefunction=compareRuns),
+                "Platform_count":{}}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
@@ -83,6 +84,11 @@ def add_contentCategory(catalog, content):
             catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]] = 0
         catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]] += 1    
     ###7###
+    for i in catalog["Id_Platforms_Dict"][content["Game_Id"]].split(","):
+        i = i.strip()
+        if i not in catalog["Platform_count"]:
+            catalog["Platform_count"][i] = 0
+        catalog["Platform_count"][i] += 1
 def add_contentGames(catalog, content):
     for platform in content["Platforms"].split(","):
         platform = platform.strip()
