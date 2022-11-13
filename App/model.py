@@ -102,7 +102,7 @@ def add_contentGames(catalog, content):
 def addcontentStreamReveue(catalog,content):
     if (content["Misc"]) == "False":
         avg,revenue = Revenue(catalog,content)
-        content["Time_Avg"] = avg
+        content["Time_Avg"] = round(avg,2)
         gt = catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]]
         content["Genres"] = catalog["Id_Genres_Dict"][content["Game_Id"]]
         content["Platforms"] = catalog["Id_Platforms_Dict"][content["Game_Id"]]
@@ -111,13 +111,11 @@ def addcontentStreamReveue(catalog,content):
         content["Total_Runs"] = catalog["Number_Of_RegistersRuns_ById"]["Runs"][content["Game_Id"]]
         for platform in (catalog["Id_Platforms_Dict"][content["Game_Id"]]).split(","):
             platform = platform.strip()
-            pt = me.getValue(mp.get(catalog["MapByPlatform"],platform))["size"]
-            MarketShare = round(gt/pt,2)
+            pt = me.getValue(mp.get(catalog["MapByPlatform"],platform))["size"] 
+            MarketShare = gt/pt
             stream_revenue = round(revenue*MarketShare,2)
-            content["Market_Share"] = MarketShare
+            content["Market_Share"] = round(MarketShare,2)
             content["Stream_Revenue"] = stream_revenue
-            if platform == "PC" and content["Game_Id"] == "180":
-                print(content)
             if mp.contains(catalog["MapByPlatformAndRevenue"],platform) == False:
                 mp.put(catalog["MapByPlatformAndRevenue"],platform,om.newMap())
             map_ = me.getValue(mp.get(catalog["MapByPlatformAndRevenue"],platform))
@@ -194,7 +192,7 @@ def Revenue(catalog,content): #Función Auxiliar Requerimiento 7
         sum += float(content["Time_2"])
         div += 1
     avg = sum/div
-    return (round(avg,2),round(popularity*avg/antiquity,2))
+    return avg,(popularity*(avg/60))/antiquity
 def reverselist(list): #Función para invertir el orden de una lista
     li = 1
     lo = lt.size(list)

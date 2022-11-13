@@ -282,7 +282,7 @@ def printreq7(catalog,platform,N):
         for e in print_list[0]:
           xd.append(i[e])
         print_list.append(xd)  
-    print(tabulate(print_list,tablefmt="grid"))
+    print(tabulate(print_list,tablefmt="grid",maxcolwidths=15))
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
