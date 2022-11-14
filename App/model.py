@@ -32,8 +32,11 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import orderedmap as om
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import mergesort as merg
+from DISClib.Algorithms.Sorting import quicksort as quick
 assert cf
 import time
+from datetime import datetime
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -51,6 +54,7 @@ def newCatalog():
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
                 "MapByRuns":om.newMap(),
+                "MapByDates_0":om.newMap(comparefunction=comparedates0),
                 "MapByTime_0":om.newMap(comparefunction=compareRuns),
                 "Number_Of_RegistersRuns_ById":{"Register":{},"Runs":{}},
                 "MapByPlatformAndRevenue":mp.newMap()}
@@ -72,6 +76,12 @@ def add_contentCategory(catalog, content):
     if om.contains(map_runs,content["Time_0"]) == False:
         om.put(map_runs,content["Time_0"],lt.newList("ARRAY_LIST"))
     lt.addLast(me.getValue(om.get(map_runs,content["Time_0"])),content)
+    if om.contains(catalog['MapByDates_0'], datetime.fromisoformat(content['Record_Date_0'].replace('Z',''))) == False:
+        om.put(catalog['MapByDates_0'], datetime.fromisoformat(content['Record_Date_0'].replace('Z','')), om.newMap(omaptype='RBT', comparefunction=compareTime0))
+    map_dates_0 = me.getValue(om.get(catalog['MapByDates_0'], datetime.fromisoformat(content['Record_Date_0'].replace('Z',''))))
+    if om.contains(map_dates_0, content['Time_0']) == False:
+        om.put(map_dates_0, content['Time_0'], lt.newList('ARRAY_LIST'))
+    lt.addLast(me.getValue(om.get(map_dates_0, content['Time_0'])), content)
     if om.contains(catalog["MapByTime_0"],content["Time_0"]) == False:
         om.put(catalog["MapByTime_0"],content["Time_0"],lt.newList("ARRAY_LIST"))
     lt.addLast(me.getValue(om.get(catalog["MapByTime_0"],content["Time_0"])),content)
@@ -142,8 +152,14 @@ def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Prici
     for i in lt.iterator(RunsInRange):
         lt.addLast(CategoryList,reverselist(om.valueSet(i)))
     return CategoryList
-def WorstTimesbyDateRange(catalog,Fecha_inferior,Fecha_superior): #Función Pricipal Requerimiento 4
-    pass
+
+def SlowestTimesByDateRange(catalog,lo,hi): #Función Pricipal Requerimiento 4
+    DatesInRange = om.values(catalog['MapByDates_0'], lo, hi)
+    DateTimesList = lt.newList('ARRAY_LIST', cmpfunction=compareTime_0)
+    for i in lt.iterator(DatesInRange):
+        lt.addLast(DateTimesList, om.valueSet(i))
+    return DatesInRange, om.size(DatesInRange), reverselist(DateTimesList)
+
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
     AttemptsinRange = om.values(catalog["MapByTime_0"],Tiempo_inferior,Tiempo_superior)
     return AttemptsinRange
@@ -218,6 +234,15 @@ def comparedates(date1,date2):
         return -1
     else:
         return 0
+
+def comparedates0(date1, date2):
+    if date1 > date2:
+        return 1
+    elif date1 < date2:
+        return -1
+    else:
+        return 0
+
 def compareRuns(run1,run2):
     run1,run2 = float(run1),float(run2)
     if run1 > run2:
@@ -227,6 +252,15 @@ def compareRuns(run1,run2):
     else:
         return 0
 def compareTime0(time1, time2):
+    if time1 > time2:
+        return 1
+    elif time1 < time2:
+        return -1
+    else:
+        return 0
+
+def compareTime_0(time1, time2):
+    time1, time2 = int(float(time1)), int(float(time2))
     if time1 > time2:
         return 1
     elif time1 < time2:

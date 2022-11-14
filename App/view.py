@@ -29,7 +29,7 @@ from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from tabulate  import tabulate
 assert cf
-
+from datetime import datetime
 
 """
 La vista se encarga de la interacción con el usuario
@@ -204,6 +204,48 @@ def printreq3(catalog,lo,lh):
     print("Hay",str(lt.size(list)),"elementos en el rango.")
     print(tabulate(print_list1,tablefmt="grid"))
 
+def printreq4(catalog, lo, hi):
+    mapdict, size, times_list = controller.SlowestTimesByDateRange(catalog, lo, hi)
+    names = catalog["model"]["Id_Name_Dict"]
+    print('Registros más lentos en el rango de fechas:', lo, 'a', hi)
+    print('Número de registros en el rango de fechas:', size)
+    print_list = [['Time_0', 'Record_Date_0', 'Name', 'Category', 'Subcategory', 'Num_Runs', 'Players_0', 'Country_0']]
+    first = lt.subList(times_list, 1, 3)
+    last = lt.subList(times_list, lt.size(times_list)-2, 3)
+    if lt.size(times_list) >= 6:
+        for info in lt.iterator(first):
+            for element in lt.iterator(info):
+                for register in lt.iterator(element):
+                    print_list_2 = []
+                    for title in print_list[0]:
+                        if title != 'Name':
+                            print_list_2.append(register[title])
+                        else:
+                            print_list_2.append(names[register['Game_Id']])
+                print_list.append(print_list_2)
+        for info in lt.iterator(last):
+            for element in lt.iterator(info):
+                for register in lt.iterator(element):
+                    print_list_2 = []
+                    for title in print_list[0]:
+                        if title != 'Name':
+                            print_list_2.append(register[title])
+                        else:
+                            print_list_2.append(names[register['Game_Id']])
+                print_list.append(print_list_2)
+    else:
+        for info in lt.iterator(times_list):
+            for element in lt.iterator(info):
+                for register in lt.iterator(element):
+                    print_list_2 = []
+                    for title in print_list[0]:
+                        if title != 'Name':
+                            print_list_2.append(register[title])
+                        else:
+                            print_list_2.append(names[register['Game_Id']])
+                print_list.append(print_list_2)
+    print(tabulate(print_list, tablefmt='grid'))
+
 def printreq5(catalog,Tiempo_inferior,Tiempo_superior):
     lista = controller.RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior)
     print_list = [["Time_0","Count","Details"]]
@@ -310,6 +352,12 @@ while True:
         lo = input("Ingrese el limite inferior: ")
         lh = input("Ingrese el limite superior: ")
         printreq3(catalog,lo,lh)
+    
+    elif int(inputs[0]) == 5:
+        lo = datetime.fromisoformat(input('Ingrese el límite inferior de la fecha:hora en que se obtuvo el record:'))
+        hi = datetime.fromisoformat(input('Ingrese el límite superior de la fecha:hora en que se obtuvo el record:'))
+        printreq4(catalog,lo,hi)
+
     elif int(inputs[0]) == 6:
         lo = input("Ingrese el tiempo inferior: ")
         lh = input("Ingrese el tiempo superior: ")
