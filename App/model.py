@@ -47,15 +47,18 @@ def newCatalog():
                 "Id_Genres_Dict" : {},
                 "Id_Platforms_Dict" : {},
                 "Id_ReleaseDate_Dict":{},
-                ###7###
                 "Number_Of_RegistersRuns_ById":{"Register":{},"Runs":{}},
                 "MapByPlatformAndRevenue":mp.newMap(),
-                ###7###
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
                 "MapByRuns":om.newMap(),
                 "MapByTime_0":om.newMap(comparefunction=compareRuns),
-                "Platform_count":{}}
+                "Platform_count":{},
+                "Time_0_Map":om.newMap(),
+                "Time_1_Map":om.newMap(),
+                "Time_2_Map":om.newMap(),
+                "Time_Avg_Map":om.newMap(),
+                "Runs_Map":om.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
@@ -207,6 +210,17 @@ def reverselist(list): #Función para invertir el orden de una lista
         li +=1
         lo -= 1
     return list
+def time_avg(content): #Función para hallar tiempo promedio
+    if content["Time_0"] != "":
+        sum_ += float(content["Time_0"])
+        div += 1
+    if content["Time_1"] != "":
+        sum_ += float(content["Time_1"])
+        div += 1
+    if content["Time_2"] != "":
+        sum_ += float(content["Time_2"])
+        div += 1
+    return sum_/div
 # Funciones utilizadas para comparar elementos dentro de una lista
 def comparedates(date1,date2):
     if len(date1) == 8:
