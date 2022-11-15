@@ -20,7 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from tkinter import N
+
 from traceback import print_list
 import config as cf
 import sys
@@ -274,6 +274,18 @@ def printreq5(catalog,Tiempo_inferior,Tiempo_superior):
                 print_list2.append(list)
             print_list.append([time,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
     print(tabulate(print_list,tablefmt="grid",maxcolwidths=13))
+def printreq6(catalog,li,lo,N,criterio,x):
+    min,max_,size,step,count_list = controller.HistogramofTimesbyYear(catalog,int(li),int(lo),int(N),criterio)
+    print("Valor mas alto:",str(round(max_,2)))
+    print("Valor más bajo:",str(round(min,2)))
+    print("Hay",str(size),"registros.")
+    print_table = [["bin","count","lvl","mark"]]
+    for i in range(1,int(N)+1):
+        lvl = int(lt.getElement(count_list,i)/int(x))
+        print_table.append(["("+str(round(min,2))+","+str(round(min+step,2))+"]",lt.getElement(count_list,i),lvl,("*"*lvl)])
+        min += step
+    print(tabulate(print_table,tablefmt="grid"))
+    print("Cada '*' representa",x,"registros.")
 def printreq7(catalog,platform,N):
     list = controller.TopNRevenueGames(catalog,platform,int(N))
     print_list = [["Name","Release_Date","Platforms","Genres","Stream_Revenue","Market_Share","Time_Avg","Total_Runs"]]
@@ -311,10 +323,17 @@ while True:
         lo = input("Ingrese el tiempo inferior: ")
         lh = input("Ingrese el tiempo superior: ")
         printreq5(catalog,lo,lh)
+    elif int(inputs[0]) == 7:
+        li = input("Ingrese el año inferior: ")
+        lo = input("Ingrese el año superior: ")
+        n = input("ingrese el numero de segmentos: ")
+        x = input("Ingrese la división de las marcas: ")
+        criterio = input('Ingrese el criterio ("Time_0","Time_1","Time_2","Time_Avg","Num_Runs"): ')
+        printreq6(catalog,li,lo,n,criterio,x)
     elif int(inputs[0]) == 8:
         platform = input("Ingrese la plataforma: ")
-        N = input("Ingrese el numero N: ")
-        printreq7(catalog,platform,N)
+        n = input("Ingrese el numero N: ")
+        printreq7(catalog,platform,n)
     else:
         sys.exit(0)
 sys.exit(0)

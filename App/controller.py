@@ -89,5 +89,7 @@ def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Prici
 
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
     return model.RecentAttemptsbyRecordTimeRange(catalog['model'],Tiempo_inferior,Tiempo_superior)
+def HistogramofTimesbyYear(catalog,li,lo,N,criterio): #Función Principal Requerimiento 6
+    return model.HistogramofTimesbyYear(catalog["model"],li,lo,N,criterio)
 def TopNRevenueGames(catalog,platform,N): #Función Pricipal Requerimiento 7
     return model.TopNRevenueGames(catalog["model"],platform,N)
