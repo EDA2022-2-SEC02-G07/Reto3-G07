@@ -82,12 +82,13 @@ def add_contentCategory(catalog, content):
     if om.contains(map_runs,content["Time_0"]) == False:
         om.put(map_runs,content["Time_0"],lt.newList("ARRAY_LIST"))
     lt.addLast(me.getValue(om.get(map_runs,content["Time_0"])),content)
-    if om.contains(catalog['MapByDates_0'], datetime.fromisoformat(content['Record_Date_0'].replace('Z',''))) == False:
-        om.put(catalog['MapByDates_0'], datetime.fromisoformat(content['Record_Date_0'].replace('Z','')), om.newMap(omaptype='RBT', comparefunction=compareTime0))
-    map_dates_0 = me.getValue(om.get(catalog['MapByDates_0'], datetime.fromisoformat(content['Record_Date_0'].replace('Z',''))))
-    if om.contains(map_dates_0, content['Time_0']) == False:
-        om.put(map_dates_0, content['Time_0'], lt.newList('ARRAY_LIST'))
-    lt.addLast(me.getValue(om.get(map_dates_0, content['Time_0'])), content)
+    if content['Record_Date_0'] != "": 
+        if om.contains(catalog['MapByDates_0'], datetime.fromisoformat(content['Record_Date_0'].replace('Z',''))) == False:
+            om.put(catalog['MapByDates_0'], datetime.fromisoformat(content['Record_Date_0'].replace('Z','')), om.newMap(omaptype='RBT', comparefunction=compareTime0))
+        map_dates_0 = me.getValue(om.get(catalog['MapByDates_0'], datetime.fromisoformat(content['Record_Date_0'].replace('Z',''))))
+        if om.contains(map_dates_0, content['Time_0']) == False:
+            om.put(map_dates_0, content['Time_0'], lt.newList('ARRAY_LIST'))
+        lt.addLast(me.getValue(om.get(map_dates_0, content['Time_0'])), content)
     if om.contains(catalog["MapByTime_0"],content["Time_0"]) == False:
         om.put(catalog["MapByTime_0"],content["Time_0"],lt.newList("ARRAY_LIST"))
     lt.addLast(me.getValue(om.get(catalog["MapByTime_0"],content["Time_0"])),content)
@@ -99,7 +100,7 @@ def add_contentCategory(catalog, content):
     year = getYear(catalog,content)
     content["Time_Avg"] = time_avg(content)
     for i in ("Time_0","Time_1","Time_2","Time_Avg","Num_Runs"):
-        if content[i] != "Unknown":
+        if content[i] != "":
             content[i] = float(content[i])
             if om.contains(catalog[i+"Map"],year) == False:
                 om.put(catalog[i+"Map"],year,om.newMap())
@@ -270,13 +271,13 @@ def reverselist(list): #Función para invertir el orden de una lista
 def time_avg(content): #Función para hallar tiempo promedio
     sum_ = 0
     div  = 0
-    if content["Time_0"] != "Unknown":
+    if content["Time_0"] != "":
         sum_ += float(content["Time_0"])
         div += 1
-    if content["Time_1"] != "Unknown":
+    if content["Time_1"] != "":
         sum_ += float(content["Time_1"])
         div += 1
-    if content["Time_2"] != "Unknown":
+    if content["Time_2"] != "":
         sum_ += float(content["Time_2"])
         div += 1
     return sum_/div
