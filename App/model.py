@@ -51,13 +51,18 @@ def newCatalog():
                 "Id_Genres_Dict" : {},
                 "Id_Platforms_Dict" : {},
                 "Id_ReleaseDate_Dict":{},
+                "Number_Of_RegistersRuns_ById":{"Register":{},"Runs":{}},
+                "MapByPlatformAndRevenue":mp.newMap(),
                 "MapByPlatform":mp.newMap(),
                 'MapByPlayers':mp.newMap(),
                 "MapByRuns":om.newMap(),
-                "MapByDates_0":om.newMap(comparefunction=comparedates0),
                 "MapByTime_0":om.newMap(comparefunction=compareRuns),
-                "Number_Of_RegistersRuns_ById":{"Register":{},"Runs":{}},
-                "MapByPlatformAndRevenue":mp.newMap()}
+                "Platform_count":{},
+                "Time_0Map":om.newMap(),
+                "Time_1Map":om.newMap(),
+                "Time_2Map":om.newMap(),
+                "Time_AvgMap":om.newMap(),
+                "Num_RunsMap":om.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
@@ -90,6 +95,17 @@ def add_contentCategory(catalog, content):
         if content["Game_Id"] not in catalog["Number_Of_RegistersRuns_ById"]["Register"]:
             catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]] = 0
         catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]] += 1
+    year = getYear(catalog,content)
+    content["Time_Avg"] = time_avg(content)
+    for i in ("Time_0","Time_1","Time_2","Time_Avg","Num_Runs"):
+        if content[i] != "Unknown":
+            content[i] = float(content[i])
+            if om.contains(catalog[i+"Map"],year) == False:
+                om.put(catalog[i+"Map"],year,om.newMap())
+            map__ = me.getValue(om.get(catalog[i+"Map"],year))
+            if om.contains(map__,content[i]) == False:
+                om.put(map__,content[i],lt.newList("ARRAY_LIST"))
+            lt.addLast(me.getValue(om.get(map__,content[i])),content.copy())
 def add_contentGames(catalog, content):
     for platform in content["Platforms"].split(","):
         platform = platform.strip()
@@ -164,8 +180,41 @@ def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #F
     AttemptsinRange = om.values(catalog["MapByTime_0"],Tiempo_inferior,Tiempo_superior)
     return AttemptsinRange
 
-def HistogramofTimesbyYear(catalog,anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades): #Función Pricipal Requerimiento 6
-    pass
+def HistogramofTimesbyYear(catalog,li,lo,N,criterio): #Función Pricipal Requerimiento 6
+    Year_Values = om.values(catalog[criterio+"Map"],li,lo)
+    list = lt.newList("ARRAY_LIST")
+    count_list = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(Year_Values):
+        max_i = om.maxKey(i)
+        min_i = om.minKey(i)
+        values_i = om.values(i,min_i,max_i)
+        for e in lt.iterator(values_i):
+            for a in lt.iterator(e):
+                lt.addLast(list,a[criterio])
+    merg.sort(list,CompareNumber)
+    min = lt.getElement(list,1)
+    max_ = lt.getElement(list,lt.size(list))
+    size = lt.size(list)
+    step = (max_- min)/N
+    for i in range(N):
+        lt.addLast(count_list,0)
+    for i in lt.iterator(list):
+        a = 1
+        inf = min
+        top = min + step
+        continuar = True
+        while a < N and continuar == True:
+            if i == min:
+                lt.changeInfo(count_list,1,lt.getElement(count_list,1)+1)
+                continuar = False
+            elif i > inf and i <= top:
+                lt.changeInfo(count_list,a,lt.getElement(count_list,a)+1)
+                continuar = False
+            else:
+                inf = top
+                top += step
+            a += 1
+    return min,max_,size,step,count_list
 def TopNRevenueGames(catalog,platform,N): #Función Pricipal Requerimiento 7
     size = me.getValue(mp.get(catalog["MapByPlatform"],platform))["size"]
     MapByPlatformAndRevenue = catalog["MapByPlatformAndRevenue"]
@@ -217,6 +266,26 @@ def reverselist(list): #Función para invertir el orden de una lista
         li +=1
         lo -= 1
     return list
+def time_avg(content): #Función para hallar tiempo promedio
+    sum_ = 0
+    div  = 0
+    if content["Time_0"] != "Unknown":
+        sum_ += float(content["Time_0"])
+        div += 1
+    if content["Time_1"] != "Unknown":
+        sum_ += float(content["Time_1"])
+        div += 1
+    if content["Time_2"] != "Unknown":
+        sum_ += float(content["Time_2"])
+        div += 1
+    return sum_/div
+def getYear(catalog,content):
+    if len(catalog["Id_ReleaseDate_Dict"][content["Game_Id"]]) == 8:
+        release_year = int(time.strptime(catalog["Id_ReleaseDate_Dict"][content["Game_Id"]], "%y-%m-%d")[0])
+    else:
+        release_year = int(time.strptime(catalog["Id_ReleaseDate_Dict"][content["Game_Id"]], "%Y-%m-%d")[0])
+    return release_year
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 def comparedates(date1,date2):
     if len(date1) == 8:
@@ -268,4 +337,8 @@ def compareTime_0(time1, time2):
     else:
         return 0
 # Funciones de ordenamiento
-
+def CompareNumber(n1,n2):
+    if n1 < n2:
+        return True
+    else:
+        return False

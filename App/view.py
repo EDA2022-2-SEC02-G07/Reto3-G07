@@ -363,21 +363,12 @@ while True:
         lh = input("Ingrese el tiempo superior: ")
         printreq5(catalog,lo,lh)
     elif int(inputs[0]) == 7:
-        anio_lo = input("Ingrese el año inferior: ")
-        anio_hi = input("Ingrese el año superior: ")
-        N_segmentos = input("Ingrese el numero de segmentos en que se divide el rango de propiedad en el histograma: ")
-        N_niveles = input("Ingrese el numero de niveles en que se dividen las marcas de jugadores en el histograma: ")
-        print("\n¿Desea consultar las siguientes propiedades de los registros?")
-        print("- El mejor tiempo registrado, el segundo mejor tiempo, el tercer mejor tiempo")
-        print("- El tiempo promedio registrado")
-        print("- El número de intentos registrados")
-        respuesta = input("Ingrese 1 para 'si' o 0 para 'No':" )
-        if int(respuesta) == 1:
-            propiedades = True
-        else:
-            propiedades = False
-
-        printreq6(catalog,anio_lo,anio_hi,N_segmentos,N_segmentos,N_niveles,propiedades)
+        li = input("Ingrese el año inferior: ")
+        lo = input("Ingrese el año superior: ")
+        n = input("ingrese el numero de segmentos: ")
+        x = input("Ingrese la división de las marcas: ")
+        criterio = input('Ingrese el criterio ("Time_0","Time_1","Time_2","Time_Avg","Num_Runs"): ')
+        printreq6(catalog,li,lo,n,criterio,x)
     elif int(inputs[0]) == 8:
         platform = input("Ingrese la plataforma: ")
         N = input("Ingrese el numero N: ")
