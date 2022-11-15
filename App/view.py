@@ -316,8 +316,18 @@ def printreq5(catalog,Tiempo_inferior,Tiempo_superior):
             print_list.append([time,lt.size(i),tabulate(print_list2,tablefmt="grid",maxcolwidths=15)])
     print(tabulate(print_list,tablefmt="grid"))
 
-def printreq6(catalog,anio_inferior,anio_superior,N_segmentos,N_niveles,anio,propiedades):
-    pass
+def printreq6(catalog,li,lo,N,criterio,x):
+    min,max_,size,step,count_list = controller.HistogramofTimesbyYear(catalog,int(li),int(lo),int(N),criterio)
+    print("Valor mas alto:",str(round(max_,2)))
+    print("Valor más bajo:",str(round(min,2)))
+    print("Hay",str(size),"registros.")
+    print_table = [["bin","count","lvl","mark"]]
+    for i in range(1,int(N)+1):
+        lvl = int(lt.getElement(count_list,i)/int(x))
+        print_table.append(["("+str(round(min,2))+","+str(round(min+step,2))+"]",lt.getElement(count_list,i),lvl,("*"*lvl)])
+        min += step
+    print(tabulate(print_table,tablefmt="grid"))
+    print("Cada '*' representa",x,"registros.")
 def printreq7(catalog,platform,N):
     list,size = controller.TopNRevenueGames(catalog,platform,int(N))
     print("Hay",str(size),"registros para",platform+".")

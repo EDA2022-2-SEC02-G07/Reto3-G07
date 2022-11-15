@@ -62,7 +62,8 @@ def newCatalog():
                 "Time_1Map":om.newMap(),
                 "Time_2Map":om.newMap(),
                 "Time_AvgMap":om.newMap(),
-                "Num_RunsMap":om.newMap()}
+                "Num_RunsMap":om.newMap(),
+                "MapByDates_0":om.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_contentCategory(catalog, content):
