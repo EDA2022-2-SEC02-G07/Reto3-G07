@@ -24,7 +24,7 @@
  * Dario Correal - Version inicial
  """
 
-
+import tracemalloc
 from math import log
 import config as cf
 from DISClib.ADT import list as lt

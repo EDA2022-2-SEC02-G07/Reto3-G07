@@ -23,7 +23,7 @@ import config as cf
 import model
 import csv
 import time
-
+import tracemalloc
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
@@ -36,6 +36,7 @@ def newController():
     control = {
         'model': model.newCatalog()
     }
+    tracemalloc.start()
     return control
 # Funciones para la carga de datos
 def loadData(control,size):
@@ -103,6 +104,25 @@ def deltaTime(end, start):
     """
     elapsed = float(end - start)
     return elapsed
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+def deltaMemory(stop_memory, start_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory
 
 def recordsDistributionByCountry(catalog, year, lo, hi):
     return model.RecordsDistributionByCountry(catalog['model'], year, lo, hi)
