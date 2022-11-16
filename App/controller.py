@@ -22,7 +22,7 @@
 import config as cf
 import model
 import csv
-
+import time
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -91,6 +91,18 @@ def HistogramofTimesbyYear(catalog,li,lo,N,criterio): #Función Principal Requer
 
 def TopNRevenueGames(catalog,platform,N):
     return model.TopNRevenueGames(catalog["model"],platform,N)
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+def deltaTime(end, start):
+    """
+    devuelve la diferencia entre tiempos de procesamiento muestreados
+    """
+    elapsed = float(end - start)
+    return elapsed
 
 def recordsDistributionByCountry(catalog, year, lo, hi):
     return model.RecordsDistributionByCountry(catalog['model'], year, lo, hi)

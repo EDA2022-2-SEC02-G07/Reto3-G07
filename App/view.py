@@ -52,7 +52,7 @@ def printMenu():
     print("0- Salir")
 
 catalog = None
-size = "-small"
+size = "-large,"
 """
 Menu principal
 """
@@ -358,42 +358,73 @@ while True:
         platform = input("Ingrese la plataforma: ")
         date1 = input("Ingrese la primera fecha: ")
         date2 = input("Ingrese la segunda fecha: ")
+        time1 = controller.getTime()
         printreq1(catalog,platform,date1,date2)
+        time2 = controller.getTime()
+        deltatime = controller.deltaTime(time2, time1)
+        print('Tiempo de ejecución:', str(deltatime), 'ms.')
 
     elif int(inputs[0])==3:
         player = input('Ingrese el nombre del jugador:')
+        time1 = controller.getTime()
         printreq2(catalog, player)
+        time2 = controller.getTime()
+        deltatime = controller.deltaTime(time2, time1)
+        print('Tiempo de ejecución:', str(deltatime), 'ms.')
 
     elif int(inputs[0]) == 4:
         lo = input("Ingrese el limite inferior: ")
         lh = input("Ingrese el limite superior: ")
+        time1 = controller.getTime()
         printreq3(catalog,lo,lh)
+        time2 = controller.getTime()
+        deltatime = controller.deltaTime(time2, time1)
+        print('Tiempo de ejecución:', str(deltatime), 'ms.')
     
     elif int(inputs[0]) == 5:
         lo = datetime.fromisoformat(input('Ingrese el límite inferior de la fecha:hora en que se obtuvo el record:'))
         hi = datetime.fromisoformat(input('Ingrese el límite superior de la fecha:hora en que se obtuvo el record:'))
+        time1 = controller.getTime()
         printreq4(catalog,lo,hi)
-
+        time2 = controller.getTime()
+        deltatime = controller.deltaTime(time2, time1)
+        print('Tiempo de ejecución:', str(deltatime), 'ms.')
     elif int(inputs[0]) == 6:
         lo = input("Ingrese el tiempo inferior: ")
         lh = input("Ingrese el tiempo superior: ")
+        time1 = controller.getTime()
         printreq5(catalog,lo,lh)
+        time2 = controller.getTime()
+        deltatime = controller.deltaTime(time2, time1)
+        print('Tiempo de ejecución:', str(deltatime), 'ms.')
     elif int(inputs[0]) == 7:
         li = input("Ingrese el año inferior: ")
         lo = input("Ingrese el año superior: ")
         n = input("ingrese el numero de segmentos: ")
         x = input("Ingrese la división de las marcas: ")
         criterio = input('Ingrese el criterio ("Time_0","Time_1","Time_2","Time_Avg","Num_Runs"): ')
+        time1 = controller.getTime()
         printreq6(catalog,li,lo,n,criterio,x)
+        time2 = controller.getTime()
+        deltatime = controller.deltaTime(time2, time1)
+        print('Tiempo de ejecución:', str(deltatime), 'ms.')
     elif int(inputs[0]) == 8:
         platform = input("Ingrese la plataforma: ")
         N = input("Ingrese el numero N: ")
+        time1 = controller.getTime()
         printreq7(catalog,platform,N)
+        time2 = controller.getTime()
+        deltatime = controller.deltaTime(time2, time1)
+        print('Tiempo de ejecución:', str(deltatime), 'ms.')
     elif int(inputs[0]) == 9:
         year = input('Ingrese el año de lanzamiento:')
         lo = input('Ingrese el límite inferior del mejor tiempo record:')
         hi = input('Ingrese el límite superior del mejor tiempo record:')
+        time1 = controller.getTime()
         printreq8(catalog, year, lo, hi)
+        time2 = controller.getTime()
+        deltatime = controller.deltaTime(time2, time1)
+        print('Tiempo de ejecución:', str(deltatime), 'ms.')
     else:
         sys.exit(0)
 sys.exit(0)
