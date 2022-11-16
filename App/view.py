@@ -328,6 +328,7 @@ def printreq6(catalog,li,lo,N,criterio,x):
         min += step
     print(tabulate(print_table,tablefmt="grid"))
     print("Cada '*' representa",x,"registros.")
+
 def printreq7(catalog,platform,N):
     list,size = controller.TopNRevenueGames(catalog,platform,int(N))
     print("Hay",str(size),"registros para",platform+".")
@@ -338,6 +339,11 @@ def printreq7(catalog,platform,N):
           xd.append(i[e])
         print_list.append(xd)  
     print(tabulate(print_list,tablefmt="grid",maxcolwidths=15))
+
+def printreq8(catalog, year, lo, hi):
+    total = controller.recordsDistributionByCountry(catalog, year, lo, hi)
+    print('Hay', total, 'registros de espeedrun en el año', year, 'dentro del rango de tiempos', lo, 'y', hi,'.')
+
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
@@ -383,7 +389,11 @@ while True:
         platform = input("Ingrese la plataforma: ")
         N = input("Ingrese el numero N: ")
         printreq7(catalog,platform,N)
-        
+    elif int(inputs[0]) == 9:
+        year = input('Ingrese el año de lanzamiento:')
+        lo = input('Ingrese el límite inferior del mejor tiempo record:')
+        hi = input('Ingrese el límite superior del mejor tiempo record:')
+        printreq8(catalog, year, lo, hi)
     else:
         sys.exit(0)
 sys.exit(0)

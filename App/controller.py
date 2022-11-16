@@ -80,7 +80,7 @@ def BestTimesByPlayer(catalog, player):
 def BestTimesbyAttemptsRange(catalog,Lim_inferior,Lim_superior): #Función Pricipal Requerimiento 3
     return model.BestTimesbyAttemptsRange(catalog["model"],Lim_inferior,Lim_superior)
 
-def SlowestTimesByDateRange(catalog, lo, hi):
+def SlowestTimesByDateRange(catalog, lo, hi): #Función Pricipal Requerimiento 4
     return model.SlowestTimesByDateRange(catalog['model'], lo, hi)
 
 def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 5
@@ -88,5 +88,9 @@ def RecentAttemptsbyRecordTimeRange(catalog,Tiempo_inferior,Tiempo_superior): #F
 
 def HistogramofTimesbyYear(catalog,li,lo,N,criterio): #Función Principal Requerimiento 6
     return model.HistogramofTimesbyYear(catalog["model"],li,lo,N,criterio)
+
 def TopNRevenueGames(catalog,platform,N):
     return model.TopNRevenueGames(catalog["model"],platform,N)
+
+def recordsDistributionByCountry(catalog, year, lo, hi):
+    return model.RecordsDistributionByCountry(catalog['model'], year, lo, hi)

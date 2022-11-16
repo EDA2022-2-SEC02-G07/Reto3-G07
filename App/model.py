@@ -37,6 +37,11 @@ from DISClib.Algorithms.Sorting import quicksort as quick
 assert cf
 import time
 from datetime import datetime
+import folium
+import pandas as pd
+from geopy.geocoders import Nominatim
+import webbrowser
+from IPython.display import display
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -63,6 +68,7 @@ def newCatalog():
                 "Time_2Map":om.newMap(),
                 "Time_AvgMap":om.newMap(),
                 "Num_RunsMap":om.newMap(),
+                "Country_0Map":om.newMap(),
                 "MapByDates_0":om.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
@@ -99,9 +105,10 @@ def add_contentCategory(catalog, content):
         catalog["Number_Of_RegistersRuns_ById"]["Register"][content["Game_Id"]] += 1
     year = getYear(catalog,content)
     content["Time_Avg"] = time_avg(content)
-    for i in ("Time_0","Time_1","Time_2","Time_Avg","Num_Runs"):
+    for i in ("Time_0","Time_1","Time_2","Time_Avg","Num_Runs", "Country_0"):
         if content[i] != "":
-            content[i] = float(content[i])
+            if i != 'Country_0':
+                content[i] = float(content[i])
             if om.contains(catalog[i+"Map"],year) == False:
                 om.put(catalog[i+"Map"],year,om.newMap())
             map__ = me.getValue(om.get(catalog[i+"Map"],year))
@@ -258,8 +265,36 @@ def Revenue(catalog,content): #Función Auxiliar Requerimiento 7
     avg = sum/div
     return avg,(popularity*(avg/60))/antiquity
 
-def RecordsbyCountry(catalog,Anio__publicacion,Tiempo_inferior,Tiempo_superior): #Función Pricipal Requerimiento 8
-    pass
+def RecordsDistributionByCountry(catalog,year,lo,hi): #Función Pricipal Requerimiento 8
+    times_map = me.getValue(om.get(catalog['Time_0Map'], int(year)))
+    list_by_times = om.values(times_map, float(lo), float(hi))
+    content_list = lt.newList('ARRAY_LIST')
+    for i in lt.iterator(list_by_times):
+        for e in lt.iterator(i):
+            lt.addLast(content_list, e)
+    total_reg_in_range = lt.size(content_list)
+    countries_list = lt.newList('ARRAY_LIST')
+    for i in lt.iterator(content_list):
+        lt.addLast(countries_list, i['Country_0'])
+    pd_list, longitud, latitud = [], [], []
+    for i in lt.iterator(countries_list):
+        pd_list.append(i)
+    data = {'Country':pd_list}
+    df = pd.DataFrame(data)
+    gl = Nominatim(user_agent='name')
+    for i in df['Country']:
+        l = gl.geocode(i)
+        longitud.append(l.longitude)
+        latitud.append(l.latitude)
+    df['Longitud'] = longitud
+    df['Latitud'] = latitud
+    m = folium.Map()
+    for i in range(len(df.columns)-1):
+        folium.Marker(location=[df.loc[i].at['Latitud'], df.loc[i].at['Longitud']], zoom_start=12).add_to(m)
+    m.save('map.html')
+    webbrowser.open("map.html")
+    return total_reg_in_range
+
 def reverselist(list): #Función para invertir el orden de una lista
     li = 1
     lo = lt.size(list)
