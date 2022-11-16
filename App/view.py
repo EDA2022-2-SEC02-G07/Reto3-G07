@@ -52,7 +52,7 @@ def printMenu():
     print("0- Salir")
 
 catalog = None
-size = "-small"
+size = "-large,"
 """
 Menu principal
 """
@@ -379,6 +379,7 @@ while True:
         deltatime = controller.deltaTime(time2, time1)
         deltamemory = controller.deltaMemory(memory2, memory1)
         print('Tiempo de ejecución:', str(deltatime), 'ms.')
+        print('Memoria utilizada', deltamemory, 'KB.')
 
     elif int(inputs[0]) == 4:
         lo = input("Ingrese el limite inferior: ")
@@ -461,7 +462,7 @@ while True:
         deltamemory = controller.deltaMemory(memory2, memory1)
         print('Tiempo de ejecución:', str(deltatime), 'ms.')
         print('Memoria utilizada', deltamemory, 'KB.')
-        
+
     else:
         sys.exit(0)
 sys.exit(0)
